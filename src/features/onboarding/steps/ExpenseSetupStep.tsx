@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
@@ -25,7 +25,7 @@ export function ExpenseSetupStep({
     handleSubmit,
     formState: { errors },
   } = useForm<Step4Data>({
-    resolver: zodResolver(step4Schema),
+    resolver: zodResolver(step4Schema) as Resolver<Step4Data>,
     defaultValues: {
       housing: 0,
       transportation: 0,

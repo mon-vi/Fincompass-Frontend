@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/utils/cn';
 import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
 import { StepNavigation } from '../components/StepNavigation';
 import { step2Schema, INCOME_TYPE_OPTIONS, type Step2Data } from '../validation';
 
@@ -9,16 +10,18 @@ interface IncomeSetupStepProps {
   onComplete: (data: Step2Data) => void;
   onBack: () => void;
   defaultValues?: Partial<Step2Data>;
+  isSubmitting?: boolean;
+  submitError?: Error | null;
 }
 
-export function IncomeSetupStep({ onComplete, onBack, defaultValues }: IncomeSetupStepProps) {
+export function IncomeSetupStep({ onComplete, onBack, defaultValues, isSubmitting, submitError }: IncomeSetupStepProps) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Step2Data>({
-    resolver: zodResolver(step2Schema),
+    resolver: zodResolver(step2Schema) as Resolver<Step2Data>,
     defaultValues,
   });
 
@@ -87,7 +90,13 @@ export function IncomeSetupStep({ onComplete, onBack, defaultValues }: IncomeSet
         )}
       </div>
 
-      <StepNavigation onBack={onBack} />
+      {submitError && (
+        <Alert variant="error">
+          {submitError.message ?? 'Failed to save your income details. Please try again.'}
+        </Alert>
+      )}
+
+      <StepNavigation onBack={onBack} isSubmitting={isSubmitting} />
     </form>
   );
 }

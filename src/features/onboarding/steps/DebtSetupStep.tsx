@@ -1,7 +1,8 @@
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/utils/cn';
 import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
 import { StepNavigation } from '../components/StepNavigation';
 import { step3Schema, DEBT_TYPE_OPTIONS, type Step3Data } from '../validation';
 
@@ -9,9 +10,11 @@ interface DebtSetupStepProps {
   onComplete: (data: Step3Data) => void;
   onBack: () => void;
   defaultValues?: Partial<Step3Data>;
+  isSubmitting?: boolean;
+  submitError?: Error | null;
 }
 
-export function DebtSetupStep({ onComplete, onBack, defaultValues }: DebtSetupStepProps) {
+export function DebtSetupStep({ onComplete, onBack, defaultValues, isSubmitting, submitError }: DebtSetupStepProps) {
   const {
     register,
     handleSubmit,
@@ -19,7 +22,7 @@ export function DebtSetupStep({ onComplete, onBack, defaultValues }: DebtSetupSt
     control,
     formState: { errors },
   } = useForm<Step3Data>({
-    resolver: zodResolver(step3Schema),
+    resolver: zodResolver(step3Schema) as Resolver<Step3Data>,
     defaultValues: {
       hasDebts: defaultValues?.hasDebts ?? false,
       totalDebtBalance: defaultValues?.totalDebtBalance,
@@ -131,7 +134,13 @@ export function DebtSetupStep({ onComplete, onBack, defaultValues }: DebtSetupSt
         </div>
       )}
 
-      <StepNavigation onBack={onBack} />
+      {submitError && (
+        <Alert variant="error">
+          {submitError.message ?? 'Failed to save your debt details. Please try again.'}
+        </Alert>
+      )}
+
+      <StepNavigation onBack={onBack} isSubmitting={isSubmitting} />
     </form>
   );
 }

@@ -17,6 +17,8 @@ const apiClient: AxiosInstance = axios.create({
   timeout: ENV.API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
+    // Required by Laravel to return JSON error responses instead of HTML redirects
+    Accept: 'application/json',
   },
 });
 

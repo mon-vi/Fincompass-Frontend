@@ -62,17 +62,44 @@ All schemas live in `src/features/onboarding/validation/index.ts`.
 | `grow_wealth` | Grow wealth |
 | `improve_cash_flow` | Improve cash flow |
 
-## Laravel API Assumption
+## Laravel API Contract
 
-On final submit, the frontend expects:
+The backend exposes two endpoints:
 
+| Method | Path | When called |
+|---|---|---|
+| `GET` | `/api/v1/onboarding` | Fetch server-side progress (Phase 3 — not yet wired into the UI) |
+| `POST` | `/api/v1/onboarding/advance` | Called after each step's validation passes |
+
+Each step completion calls `POST /api/v1/onboarding/advance`. The frontend currently assumes the request body shape is:
+
+```json
+{ "step": 1, "data": { "goals": ["pay_off_debt"] } }
+{ "step": 2, "data": { "monthlyIncome": 4000, "incomeType": "salary" } }
+{ "step": 3, "data": { "hasDebts": true, "totalDebtBalance": 15000, ... } }
+{ "step": 4, "data": { "housing": 1200, "transportation": 400, ... } }
 ```
-POST /api/v1/onboarding
-Body: { goals, income: { monthlyIncome, incomeType }, debts: {...}, expenses: {...} }
-Response: 204 No Content (or updated user object)
+
+Expected response for steps 1–3:
+
+```json
+{ "nextStep": 2, "onboardingStatus": "pending" }
 ```
 
-The backend should set `onboardingStatus = 'complete'` on the user record. The frontend updates the local Zustand user state optimistically (does not re-fetch the user profile).
+Expected response for step 4 (completion):
+
+```json
+{ "nextStep": null, "onboardingStatus": "complete" }
+```
+
+On completion, the frontend updates local Zustand user state (`onboardingStatus: 'complete'`) and navigates to `/dashboard`.
+
+**Open questions to confirm with backend:**
+- Does the endpoint accept `{ step, data }` or the step data directly (server derives step from session)?
+- Exact shape of `GET /api/v1/onboarding` response.
+- Whether `nextStep: null` or a dedicated `complete: true` field signals completion.
+
+See `docs/api-integration.md` for the full breakdown and `onboardingReal.ts` template.
 
 ## UX Notes
 

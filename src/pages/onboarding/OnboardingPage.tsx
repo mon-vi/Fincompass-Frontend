@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useOnboarding } from '@/features/onboarding/hooks/useOnboarding';
 import { ProgressIndicator } from '@/features/onboarding/components/ProgressIndicator';
@@ -6,6 +7,7 @@ import { IncomeSetupStep } from '@/features/onboarding/steps/IncomeSetupStep';
 import { DebtSetupStep } from '@/features/onboarding/steps/DebtSetupStep';
 import { ExpenseSetupStep } from '@/features/onboarding/steps/ExpenseSetupStep';
 import { STEP_META } from '@/features/onboarding/store/onboardingStore';
+import { ROUTES } from '@/constants/routes';
 
 export function OnboardingPage() {
   const user = useAuthStore((s) => s.user);
@@ -24,6 +26,11 @@ export function OnboardingPage() {
     step3,
     step4,
   } = useOnboarding();
+
+  // Must come after all hook calls (Rules of Hooks)
+  if (user?.onboardingStatus === 'complete') {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
@@ -50,6 +57,8 @@ export function OnboardingPage() {
               <GoalSelectionStep
                 onComplete={handleStep1Complete}
                 defaultValues={step1}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
               />
             )}
             {currentStep === 2 && (
@@ -57,6 +66,8 @@ export function OnboardingPage() {
                 onComplete={handleStep2Complete}
                 onBack={goBack}
                 defaultValues={step2}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
               />
             )}
             {currentStep === 3 && (
@@ -64,6 +75,8 @@ export function OnboardingPage() {
                 onComplete={handleStep3Complete}
                 onBack={goBack}
                 defaultValues={step3}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
               />
             )}
             {currentStep === 4 && (

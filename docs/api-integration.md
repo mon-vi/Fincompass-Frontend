@@ -62,15 +62,50 @@ export const authAdapter: AuthApiAdapter = ENV.USE_MOCK_API ? authMock : authRea
 
 ### Step 4 — Repeat for onboarding
 
+The backend exposes two onboarding endpoints (not the single `POST /onboarding` that was originally assumed):
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/v1/onboarding` | Fetch current server-side onboarding progress |
+| `POST` | `/api/v1/onboarding/advance` | Submit one step's data and advance to the next |
+
+Create `src/features/onboarding/services/onboardingReal.ts` implementing `OnboardingApiAdapter`:
+
 ```typescript
 // src/features/onboarding/services/onboardingReal.ts
-import { post } from '@/services/apiClient';
-import type { OnboardingApiAdapter, OnboardingPayload } from './onboardingApi';
+import { get, post } from '@/services/apiClient';
+import type {
+  AdvancePayload,
+  AdvanceResponse,
+  OnboardingApiAdapter,
+  OnboardingStatusResponse,
+} from './onboardingApi';
 
 export const onboardingReal: OnboardingApiAdapter = {
-  submit: (payload: OnboardingPayload) => post('/onboarding', payload),
+  getStatus: () => get<OnboardingStatusResponse>('/onboarding'),
+  advance: (payload: AdvancePayload) =>
+    post<AdvanceResponse>('/onboarding/advance', payload),
 };
 ```
+
+Then wire it in `src/features/onboarding/services/index.ts`:
+
+```typescript
+import { onboardingReal } from './onboardingReal';
+
+export const onboardingAdapter: OnboardingApiAdapter = ENV.USE_MOCK_API
+  ? onboardingMock
+  : onboardingReal;
+```
+
+#### Open questions — confirm with backend before writing onboardingReal.ts
+
+| # | Question | Frontend assumption |
+|---|---|---|
+| 1 | Does `POST /onboarding/advance` accept `{ step, data }` or the step data directly? | `{ step: 1 \| 2 \| 3 \| 4, data: <step-data> }` |
+| 2 | What is the exact shape of `GET /onboarding` response? | `{ currentStep, completedSteps }` |
+| 3 | Does `POST /onboarding/advance` return `{ nextStep, onboardingStatus }` or just the user object? | `{ nextStep: number \| null, onboardingStatus }` |
+| 4 | Is `nextStep: null` the signal for completion, or is it a separate field? | `null` = complete |
 
 ## Expected API Response Shapes
 
@@ -100,33 +135,43 @@ export const onboardingReal: OnboardingApiAdapter = {
 { "message": "string" }
 ```
 
-### Onboarding endpoint
+### Onboarding endpoints
+
+**GET /onboarding** — assumed response shape (confirm with backend):
 
 ```json
-// POST /onboarding — body
-{
-  "goals": ["pay_off_debt", "emergency_fund"],
-  "income": {
-    "monthlyIncome": 4000,
-    "incomeType": "salary"
-  },
-  "debts": {
-    "hasDebts": true,
-    "totalDebtBalance": 15000,
-    "averageInterestRate": 18.5,
-    "primaryDebtType": "credit_card"
-  },
-  "expenses": {
-    "housing": 1200,
-    "transportation": 400,
-    "food": 600,
-    "utilities": 150,
-    "other": 200
-  }
-}
-
-// Response: 204 No Content or updated user object
+{ "currentStep": 1, "completedSteps": [] }
 ```
+
+**POST /onboarding/advance** — assumed request body shape (confirm with backend):
+
+```json
+// Step 1
+{ "step": 1, "data": { "goals": ["pay_off_debt", "emergency_fund"] } }
+
+// Step 2
+{ "step": 2, "data": { "monthlyIncome": 4000, "incomeType": "salary" } }
+
+// Step 3
+{ "step": 3, "data": { "hasDebts": true, "totalDebtBalance": 15000, "averageInterestRate": 18.5, "primaryDebtType": "credit_card" } }
+
+// Step 4 (final)
+{ "step": 4, "data": { "housing": 1200, "transportation": 400, "food": 600, "utilities": 150, "other": 200 } }
+```
+
+Assumed response for steps 1–3:
+
+```json
+{ "nextStep": 2, "onboardingStatus": "pending" }
+```
+
+Assumed response for step 4 (completion):
+
+```json
+{ "nextStep": null, "onboardingStatus": "complete" }
+```
+
+See the open questions table in the "Step 4 — Repeat for onboarding" section above — the exact shape of `step`/`data` wrapping must be confirmed with the backend before writing `onboardingReal.ts`.
 
 ## Error Handling
 

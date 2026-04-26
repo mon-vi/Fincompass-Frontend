@@ -1,15 +1,18 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/utils/cn';
+import { Alert } from '@/components/ui/Alert';
 import { StepNavigation } from '../components/StepNavigation';
 import { step1Schema, GOAL_OPTIONS, type Step1Data } from '../validation';
 
 interface GoalSelectionStepProps {
   onComplete: (data: Step1Data) => void;
   defaultValues?: Partial<Step1Data>;
+  isSubmitting?: boolean;
+  submitError?: Error | null;
 }
 
-export function GoalSelectionStep({ onComplete, defaultValues }: GoalSelectionStepProps) {
+export function GoalSelectionStep({ onComplete, defaultValues, isSubmitting, submitError }: GoalSelectionStepProps) {
   const {
     control,
     handleSubmit,
@@ -82,7 +85,13 @@ export function GoalSelectionStep({ onComplete, defaultValues }: GoalSelectionSt
         </p>
       )}
 
-      <StepNavigation />
+      {submitError && (
+        <Alert variant="error">
+          {submitError.message ?? 'Failed to save your goals. Please try again.'}
+        </Alert>
+      )}
+
+      <StepNavigation isSubmitting={isSubmitting} />
     </form>
   );
 }

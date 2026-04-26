@@ -29,6 +29,8 @@ export const ROUTES = {
   // Account
   SETTINGS: '/settings',
   PROFILE: '/profile',
+  BILLING: '/billing',
+  NOTIFICATIONS: '/notifications',
 
   // Misc
   NOT_FOUND: '*',

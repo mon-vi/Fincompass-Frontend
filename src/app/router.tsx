@@ -11,28 +11,20 @@ import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { OnboardingPage } from '@/pages/onboarding/OnboardingPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
+import { DebtsPage } from '@/pages/debts/DebtsPage';
+import { AddDebtPage } from '@/pages/debts/AddDebtPage';
+import { EditDebtPage } from '@/pages/debts/EditDebtPage';
+import { BudgetPage } from '@/pages/budget/BudgetPage';
+import { HealthScorePage } from '@/pages/health-score/HealthScorePage';
+import { TimelinePage } from '@/pages/timeline/TimelinePage';
+import { ActionPlanPage } from '@/pages/action-plan/ActionPlanPage';
+import { NotificationsPage } from '@/pages/notifications/NotificationsPage';
+import { ProfilePage } from '@/pages/profile/ProfilePage';
+import { BillingPage } from '@/pages/billing/BillingPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
-/**
- * Application route tree.
- *
- * Structure:
- *   / (redirect to /dashboard)
- *   Public (RedirectIfAuth)
- *     /login
- *     /register
- *     /forgot-password
- *     /reset-password
- *   Protected (RequireAuth)
- *     /onboarding         — authenticated but onboarding not yet complete
- *     Protected + Onboarded (RequireOnboarding)
- *       /dashboard
- *       ... all other app routes
- *   * — 404
- */
 export const router = createBrowserRouter([
   {
-    // Public auth routes — redirect away if already authenticated
     element: <RedirectIfAuth />,
     children: [
       {
@@ -47,32 +39,36 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // All authenticated routes
     element: <RequireAuth />,
     children: [
       {
-        // Onboarding — authenticated but not yet complete
         path: ROUTES.ONBOARDING,
         element: <OnboardingPage />,
       },
       {
-        // Main app — requires completed onboarding
         element: <RequireOnboarding />,
         children: [
           {
             element: <AppLayout />,
             children: [
               { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
-              // Additional routes added per phase:
-              // { path: ROUTES.BUDGET, element: <BudgetPage /> },
-              // { path: ROUTES.DEBTS, element: <DebtsPage /> },
+              { path: ROUTES.DEBTS, element: <DebtsPage /> },
+              { path: `${ROUTES.DEBTS}/add`, element: <AddDebtPage /> },
+              { path: `${ROUTES.DEBTS}/:id/edit`, element: <EditDebtPage /> },
+              { path: ROUTES.BUDGET, element: <BudgetPage /> },
+              { path: ROUTES.HEALTH_SCORE, element: <HealthScorePage /> },
+              { path: ROUTES.TIMELINE, element: <TimelinePage /> },
+              { path: ROUTES.ACTION_PLAN, element: <ActionPlanPage /> },
+              { path: ROUTES.NOTIFICATIONS, element: <NotificationsPage /> },
+              { path: ROUTES.PROFILE, element: <ProfilePage /> },
+              { path: ROUTES.SETTINGS, element: <ProfilePage /> },
+              { path: ROUTES.BILLING, element: <BillingPage /> },
             ],
           },
         ],
       },
     ],
   },
-  // / always redirects — guards then route to login or dashboard
   { path: ROUTES.HOME, element: <Navigate to={ROUTES.DASHBOARD} replace /> },
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> },
 ]);
