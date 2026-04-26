@@ -7,6 +7,8 @@ import { RequireOnboarding } from './guards/RequireOnboarding';
 import { RedirectIfAuth } from './guards/RedirectIfAuth';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { OnboardingPage } from '@/pages/onboarding/OnboardingPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -19,6 +21,8 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
  *   Public (RedirectIfAuth)
  *     /login
  *     /register
+ *     /forgot-password
+ *     /reset-password
  *   Protected (RequireAuth)
  *     /onboarding         — authenticated but onboarding not yet complete
  *     Protected + Onboarded (RequireOnboarding)
@@ -36,6 +40,8 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.LOGIN, element: <LoginPage /> },
           { path: ROUTES.REGISTER, element: <RegisterPage /> },
+          { path: ROUTES.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
+          { path: ROUTES.RESET_PASSWORD, element: <ResetPasswordPage /> },
         ],
       },
     ],
@@ -56,7 +62,7 @@ export const router = createBrowserRouter([
           {
             element: <AppLayout />,
             children: [
-              { index: true, path: ROUTES.DASHBOARD, element: <DashboardPage /> },
+              { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
               // Additional routes added per phase:
               // { path: ROUTES.BUDGET, element: <BudgetPage /> },
               // { path: ROUTES.DEBTS, element: <DebtsPage /> },
