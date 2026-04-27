@@ -5,6 +5,7 @@ import { AuthLayout } from '@/layouts/AuthLayout';
 import { RequireAuth } from './guards/RequireAuth';
 import { RequireOnboarding } from './guards/RequireOnboarding';
 import { RedirectIfAuth } from './guards/RedirectIfAuth';
+import { RequireTier } from './guards/RequireTier';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
@@ -21,6 +22,10 @@ import { ActionPlanPage } from '@/pages/action-plan/ActionPlanPage';
 import { NotificationsPage } from '@/pages/notifications/NotificationsPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { BillingPage } from '@/pages/billing/BillingPage';
+import { ExpensesPage } from '@/pages/expenses/ExpensesPage';
+import { OcrUploadPage } from '@/pages/ocr/OcrUploadPage';
+import { OcrReviewPage } from '@/pages/ocr/OcrReviewPage';
+import { AriaPage } from '@/pages/aria/AriaPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -56,6 +61,9 @@ export const router = createBrowserRouter([
               { path: `${ROUTES.DEBTS}/add`, element: <AddDebtPage /> },
               { path: `${ROUTES.DEBTS}/:id/edit`, element: <EditDebtPage /> },
               { path: ROUTES.BUDGET, element: <BudgetPage /> },
+              { path: ROUTES.EXPENSES, element: <ExpensesPage /> },
+              { path: ROUTES.OCR_UPLOAD, element: <OcrUploadPage /> },
+              { path: ROUTES.OCR_REVIEW, element: <OcrReviewPage /> },
               { path: ROUTES.HEALTH_SCORE, element: <HealthScorePage /> },
               { path: ROUTES.TIMELINE, element: <TimelinePage /> },
               { path: ROUTES.ACTION_PLAN, element: <ActionPlanPage /> },
@@ -63,6 +71,13 @@ export const router = createBrowserRouter([
               { path: ROUTES.PROFILE, element: <ProfilePage /> },
               { path: ROUTES.SETTINGS, element: <ProfilePage /> },
               { path: ROUTES.BILLING, element: <BillingPage /> },
+              // CFO-tier gated
+              {
+                element: <RequireTier required="cfo" />,
+                children: [
+                  { path: ROUTES.ARIA, element: <AriaPage /> },
+                ],
+              },
             ],
           },
         ],

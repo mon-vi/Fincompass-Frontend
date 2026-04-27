@@ -5,6 +5,7 @@ import { ROUTES } from '@/constants/routes';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/features/auth/hooks/useLogout';
 import { useNotifications } from '@/features/notifications/hooks';
+import { useTierAccess } from '@/hooks';
 
 interface NavItem {
   to: string;
@@ -91,6 +92,23 @@ function ReceiptIcon() {
   );
 }
 
+function ExpensesIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+      <path fillRule="evenodd" d="M1 4a1 1 0 011-1h16a1 1 0 011 1v8a1 1 0 01-1 1H2a1 1 0 01-1-1V4zm2 3a2 2 0 114 0 2 2 0 01-4 0zm12 0a2 2 0 114 0 2 2 0 01-4 0zm-5 0a1 1 0 110 2 1 1 0 010-2z" clipRule="evenodd" />
+      <path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
+    </svg>
+  );
+}
+
+function AriaIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+      <path fillRule="evenodd" d="M10 3a7 7 0 100 14A7 7 0 0010 3zM2 10a8 8 0 1116 0A8 8 0 012 10zm9-3a1 1 0 10-2 0v4a1 1 0 102 0V7zm-1 7.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
 function SidebarLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
   return (
     <NavLink
@@ -117,15 +135,18 @@ export function AppLayout() {
   const logout = useLogout();
   const navigate = useNavigate();
   const { unreadCount } = useNotifications();
+  const hasCfoAccess = useTierAccess('cfo');
 
   const mainNav: NavItem[] = [
     { to: ROUTES.DASHBOARD, label: 'Dashboard', icon: <DashIcon /> },
     { to: ROUTES.DEBTS, label: 'Debts', icon: <DebtsIcon /> },
     { to: ROUTES.BUDGET, label: 'Budget', icon: <BudgetIcon /> },
+    { to: ROUTES.EXPENSES, label: 'Expenses', icon: <ExpensesIcon /> },
     { to: ROUTES.HEALTH_SCORE, label: 'Health Score', icon: <HeartIcon /> },
     { to: ROUTES.TIMELINE, label: 'Timeline', icon: <CalendarIcon /> },
     { to: ROUTES.ACTION_PLAN, label: 'Action Plan', icon: <ListIcon /> },
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: <BellIcon count={unreadCount} /> },
+    ...(hasCfoAccess ? [{ to: ROUTES.ARIA, label: 'ARIA', icon: <AriaIcon /> }] : []),
   ];
 
   const accountNav: NavItem[] = [

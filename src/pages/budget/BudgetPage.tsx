@@ -1,14 +1,16 @@
+import { useState } from 'react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
 import { Skeleton } from '@/components/ui/Loader';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useBudget } from '@/features/budget/hooks';
-import { BudgetCategoryRow } from '@/features/budget/components/BudgetCategoryRow';
+import { BudgetCategoryRow, BudgetEditForm } from '@/features/budget/components';
 import { formatCurrency } from '@/utils/formatters';
 
 export function BudgetPage() {
   const { data: budget, isLoading, isError, error } = useBudget();
+  const [isEditing, setIsEditing] = useState(false);
 
   if (isError) {
     return (
@@ -61,23 +63,32 @@ export function BudgetPage() {
       <Card>
         <CardHeader>
           <CardTitle>Categories</CardTitle>
+          {budget && !isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+            >
+              Edit budget
+            </button>
+          )}
         </CardHeader>
+
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
           </div>
         ) : budget ? (
-          <div className="divide-y divide-slate-100">
-            {budget.categories.map((cat) => (
-              <BudgetCategoryRow key={cat.id} category={cat} />
-            ))}
-          </div>
+          isEditing ? (
+            <BudgetEditForm budget={budget} onClose={() => setIsEditing(false)} />
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {budget.categories.map((cat) => (
+                <BudgetCategoryRow key={cat.id} category={cat} />
+              ))}
+            </div>
+          )
         ) : null}
       </Card>
-
-      <p className="text-center text-xs text-slate-400">
-        Budget editing coming in Phase 4. Expense tracking via the Expenses section.
-      </p>
     </div>
   );
 }

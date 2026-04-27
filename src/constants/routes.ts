@@ -22,6 +22,10 @@ export const ROUTES = {
   TIMELINE: '/timeline',
   ACTION_PLAN: '/action-plan',
 
+  // OCR
+  OCR_UPLOAD: '/expenses/ocr',
+  OCR_REVIEW: '/expenses/ocr/review/:id',
+
   // CFO tier
   ARIA: '/aria',
   DOCUMENTS: '/documents',

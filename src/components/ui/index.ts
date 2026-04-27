@@ -10,3 +10,7 @@ export { SectionHeader } from './SectionHeader';
 export { EmptyState } from './EmptyState';
 export { StatCard } from './StatCard';
 export { ProgressBar } from './ProgressBar';
+export { FeatureGate } from './FeatureGate';
+export { LockedCard } from './LockedCard';
+export { UpgradePrompt } from './UpgradePrompt';
+export { RetryButton } from './RetryButton';
