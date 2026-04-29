@@ -18,6 +18,10 @@ export const API = {
     STATUS: '/onboarding',
     ADVANCE: '/onboarding/advance',
   },
+  INCOME: {
+    LIST: '/income',
+    DETAIL: (id: string) => `/income/${id}`,
+  },
   DASHBOARD: '/dashboard',
   BUDGET: '/budget',
   DEBTS: {

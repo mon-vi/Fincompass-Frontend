@@ -1,6 +1,7 @@
 import { get, post } from '@/services/apiClient';
 import { handleApiError } from '@/services/apiError';
 import { apiPath, API } from '@/config/endpoints';
+import type { LaravelResource } from '@/services/apiError';
 import type {
   OnboardingApiAdapter,
   OnboardingStatusResponse,
@@ -16,23 +17,31 @@ import type {
  * Confirm field names with the Laravel team before enabling.
  */
 
-interface LaravelOnboardingStatus {
-  current_step: number;
-  completed_steps: number[];
+interface LaravelProfile {
+  onboarding_step: number;
+  is_onboarding_complete: boolean;
 }
 
-interface LaravelAdvanceResponse {
-  next_step: number | null;
-  onboarding_status: 'pending' | 'complete';
+interface LaravelOnboardingStatus {
+  current_step: number;
+  is_complete?: boolean;
+  profile?: LaravelProfile;
+}
+
+function completedStepsFrom(currentStep: number, isComplete = false): OnboardingStatusResponse['completedSteps'] {
+  if (isComplete) return [1, 2, 3, 4];
+  return [1, 2, 3, 4].filter((step) => step < currentStep) as OnboardingStatusResponse['completedSteps'];
 }
 
 export const onboardingReal: OnboardingApiAdapter = {
   async getStatus(): Promise<OnboardingStatusResponse> {
     try {
-      const raw = await get<LaravelOnboardingStatus>(apiPath(API.ONBOARDING.STATUS));
+      const res = await get<LaravelResource<LaravelOnboardingStatus>>(apiPath(API.ONBOARDING.STATUS));
+      const raw = res.data;
+      const currentStep = (raw.current_step ?? raw.profile?.onboarding_step ?? 1) as OnboardingStatusResponse['currentStep'];
       return {
-        currentStep: raw.current_step as OnboardingStatusResponse['currentStep'],
-        completedSteps: raw.completed_steps as OnboardingStatusResponse['completedSteps'],
+        currentStep,
+        completedSteps: completedStepsFrom(currentStep, raw.is_complete ?? raw.profile?.is_onboarding_complete),
       };
     } catch (err) {
       handleApiError(err);
@@ -41,13 +50,15 @@ export const onboardingReal: OnboardingApiAdapter = {
 
   async advance(payload: AdvancePayload): Promise<AdvanceResponse> {
     try {
-      const raw = await post<LaravelAdvanceResponse>(apiPath(API.ONBOARDING.ADVANCE), {
+      const res = await post<LaravelResource<LaravelProfile>>(apiPath(API.ONBOARDING.ADVANCE), {
         step: payload.step,
         data: payload.data,
       });
+      const profile = res.data;
+      const isComplete = profile.is_onboarding_complete;
       return {
-        nextStep: raw.next_step as AdvanceResponse['nextStep'],
-        onboardingStatus: raw.onboarding_status,
+        nextStep: isComplete ? null : profile.onboarding_step as AdvanceResponse['nextStep'],
+        onboardingStatus: isComplete ? 'complete' : 'pending',
       };
     } catch (err) {
       handleApiError(err);

@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { ROUTES } from '@/constants/routes';
 import { useOnboardingStore } from '../store/onboardingStore';
 import { onboardingAdapter } from '../services';
+import { buildOnboardingIncomePayload, incomeAdapter } from '@/features/income/services';
 import type { AdvancePayload } from '../services';
 import type { Step1Data, Step2Data, Step3Data, Step4Data } from '../validation';
 
@@ -14,10 +15,15 @@ export function useOnboarding() {
   const { currentStep, goBack, step1, step2, step3, saveStep1, saveStep2, saveStep3, saveStep4, reset } =
     useOnboardingStore();
 
-  // Each step submission calls POST /api/v1/onboarding/advance.
-  // On success the hook advances the local step or redirects to dashboard.
+  // Step 2 must create an income record first; the backend gates advancing
+  // from income setup on at least one active income source existing.
   const advanceMutation = useMutation({
-    mutationFn: (payload: AdvancePayload) => onboardingAdapter.advance(payload),
+    mutationFn: async (payload: AdvancePayload) => {
+      if (payload.step === 2) {
+        await incomeAdapter.create(buildOnboardingIncomePayload(payload.data));
+      }
+      return onboardingAdapter.advance(payload);
+    },
     onSuccess: (result) => {
       if (result.onboardingStatus === 'complete') {
         updateUser({ onboardingStatus: 'complete' });
