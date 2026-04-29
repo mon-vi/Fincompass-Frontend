@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -17,11 +17,13 @@ export function OcrReviewPage() {
   const { data: session, isLoading, isError } = useOcrSession(id ?? null);
   const confirm = useOcrConfirm(id ?? null);
   const abandon = useOcrAbandon(id ?? null);
+  const [draftSessionId, setDraftSessionId] = useState<string | null>(null);
   const [draftItems, setDraftItems] = useState<OcrExtractedItem[]>([]);
 
-  useEffect(() => {
+  if (session?.id && session.id !== draftSessionId) {
+    setDraftSessionId(session.id);
     setDraftItems(session?.extractedItems ?? []);
-  }, [session?.id, session?.extractedItems]);
+  }
 
   const extractedIds = draftItems.map((item) => item.id);
   const { selected, toggle, selectAll, clearAll } = useOcrSelection(extractedIds);
@@ -136,7 +138,7 @@ export function OcrReviewPage() {
       </Card>
 
       {/* Footer actions */}
-      {session && session.status !== 'failed' && (
+      {session && (
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={handleAbandon}

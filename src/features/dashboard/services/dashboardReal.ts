@@ -30,7 +30,10 @@ export const dashboardReal: DashboardApiAdapter = {
   async getDashboard(): Promise<DashboardData> {
     try {
       const res = await get<LaravelResource<PartialDashboard> | PartialDashboard>(apiPath(API.DASHBOARD));
-      return mapDashboard('data' in res ? res.data : res);
+      const raw = Object.prototype.hasOwnProperty.call(res, 'data')
+        ? (res as LaravelResource<PartialDashboard>).data
+        : (res as PartialDashboard);
+      return mapDashboard(raw);
     } catch (err) {
       handleApiError(err);
     }

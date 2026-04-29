@@ -22,7 +22,7 @@ describe('OcrUploadPage', () => {
     render(<OcrUploadPage />, { wrapper: MemoryRouter });
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    await userEvent.upload(input, new File(['hello'], 'notes.txt', { type: 'text/plain' }));
+    await userEvent.upload(input, new File(['hello'], 'notes.txt', { type: 'text/plain' }), { applyAccept: false });
 
     expect(screen.getByText('Upload a PDF, PNG, JPG, or JPEG file.')).toBeInTheDocument();
     expect(mocks.upload).not.toHaveBeenCalled();
