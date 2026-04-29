@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AriaPage } from './AriaPage';
 
 const mocks = vi.hoisted(() => ({
   submit: vi.fn(),
   setInput: vi.fn(),
+  usage: { used: 50, limit: 50, resetsAt: '2026-05-01T00:00:00.000Z' as string | null | undefined },
 }));
 
 vi.mock('@/features/aria/hooks', () => ({
@@ -15,11 +16,15 @@ vi.mock('@/features/aria/hooks', () => ({
     isError: false,
     error: null,
   }),
-  useAriaUsage: () => ({ data: { used: 50, limit: 50, resetsAt: '2026-05-01T00:00:00.000Z' }, isError: false }),
+  useAriaUsage: () => ({ data: mocks.usage, isError: false }),
   useAriaInput: () => ({ input: 'Can I pay debt faster?', setInput: mocks.setInput, submit: mocks.submit, isPending: false, isError: false, error: null }),
 }));
 
 describe('AriaPage', () => {
+  beforeEach(() => {
+    mocks.usage = { used: 50, limit: 50, resetsAt: '2026-05-01T00:00:00.000Z' };
+  });
+
   it('renders assistant messages and blocks input at the usage limit', async () => {
     render(<AriaPage />);
 
@@ -29,5 +34,14 @@ describe('AriaPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Send' }));
     expect(mocks.submit).not.toHaveBeenCalled();
+  });
+
+  it('does not crash when usage reset date is missing', () => {
+    mocks.usage = { used: 50, limit: 50, resetsAt: undefined };
+
+    render(<AriaPage />);
+
+    expect(screen.getByText(/monthly message limit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Limit reached\. Resets/)).toBeInTheDocument();
   });
 });

@@ -4,3 +4,4 @@ import type { DebtsApiAdapter } from './debtsApi';
 export const debtsAdapter: DebtsApiAdapter = debtsReal;
 
 export type { DebtsApiAdapter, Debt, DebtType, CreateDebtPayload, UpdateDebtPayload } from './debtsApi';
+export { buildOnboardingDebtPayload, mapOnboardingDebtType } from './debtsApi';

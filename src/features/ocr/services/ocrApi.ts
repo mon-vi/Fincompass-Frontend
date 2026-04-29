@@ -9,7 +9,7 @@ export interface OcrExtractedExpense {
   type: 'expense';
   amount: number;
   description: string;
-  date: string;
+  date: string | null;
   suggestedCategory: ExpenseCategory;
   confidence: number;
 }

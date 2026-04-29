@@ -1,4 +1,5 @@
 import { cn } from '@/utils/cn';
+import { safeFormatDate } from '@/utils/formatters';
 import type { AriaChatMessage } from '../services';
 
 interface ChatBubbleProps {
@@ -34,7 +35,7 @@ export function ChatBubble({ message }: ChatBubbleProps) {
         {/* Render simple markdown bold (**text**) */}
         <MessageContent content={message.content} />
         <p className={cn('mt-1 text-[10px]', isUser ? 'text-indigo-200' : 'text-slate-400')}>
-          {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {safeFormatDate(message.createdAt, { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
     </div>

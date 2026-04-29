@@ -13,4 +13,4 @@ export type {
   BulkCreateExpensePayload,
 } from './expensesApi';
 
-export { EXPENSE_CATEGORY_LABELS, EXPENSE_CATEGORY_ICONS } from './expensesApi';
+export { EXPENSE_CATEGORY_LABELS, EXPENSE_CATEGORY_ICONS, buildOnboardingExpensePayload } from './expensesApi';

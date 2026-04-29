@@ -6,6 +6,7 @@ import { Alert } from '@/components/ui/Alert';
 import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { useBillingCheckout, useBillingPortal, useBillingSubscription } from '@/features/billing/hooks';
+import { safeFormatDate } from '@/utils/formatters';
 import type { UserTier } from '@/types/auth';
 
 const plans = [
@@ -131,7 +132,7 @@ export function BillingPage() {
               Status: <span className="font-semibold capitalize text-slate-900">{subscription.data.status.replaceAll('_', ' ')}</span>
             </p>
             {subscription.data.currentPeriodEnd && (
-              <p>Renews on {new Date(subscription.data.currentPeriodEnd).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <p>Renews on {safeFormatDate(subscription.data.currentPeriodEnd, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
             )}
             <Button variant="outline" onClick={handlePortal} isLoading={portal.isPending}>
               Manage subscription

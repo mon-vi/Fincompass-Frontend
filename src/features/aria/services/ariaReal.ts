@@ -24,6 +24,7 @@ interface LaravelAriaUsage {
   messages_used: number;
   messages_limit: number;
   messages_remaining?: number;
+  resets_at?: string | null;
 }
 
 function mapMessage(m: LaravelAriaMessage): AriaChatMessage {
@@ -41,7 +42,7 @@ function mapConversation(conversation: LaravelAriaConversation): AriaConversatio
 }
 
 function mapUsage(u: LaravelAriaUsage): AriaUsage {
-  return { used: u.messages_used, limit: u.messages_limit, resetsAt: u.month ?? '' };
+  return { used: u.messages_used, limit: u.messages_limit, resetsAt: u.resets_at ?? u.month ?? null };
 }
 
 export const ariaReal: AriaApiAdapter = {

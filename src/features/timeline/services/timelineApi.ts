@@ -3,7 +3,7 @@ export type PayoffStrategy = 'minimum' | 'avalanche' | 'snowball';
 export interface DebtTimelineItem {
   debtId: string;
   debtName: string;
-  payoffDate: string;
+  payoffDate: string | null;
   payoffMonth: number;
   totalPaid: number;
   interestPaid: number;
@@ -11,7 +11,7 @@ export interface DebtTimelineItem {
 
 export interface MonthlySnapshot {
   month: number;
-  date: string;
+  date: string | null;
   totalBalance: number;
   totalPayment: number;
   totalInterest: number;
@@ -21,7 +21,7 @@ export interface Timeline {
   strategy: PayoffStrategy;
   totalInterestPaid: number;
   totalPaid: number;
-  payoffDate: string;
+  payoffDate: string | null;
   totalMonths: number;
   extraPayment: number;
   debts: DebtTimelineItem[];

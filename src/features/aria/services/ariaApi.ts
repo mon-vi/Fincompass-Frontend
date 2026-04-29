@@ -19,7 +19,7 @@ export interface AriaConversation {
 export interface AriaUsage {
   used: number;
   limit: number;
-  resetsAt: string;
+  resetsAt: string | null;
 }
 
 export interface SendMessagePayload {

@@ -7,6 +7,7 @@ import { Alert } from '@/components/ui/Alert';
 import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { useApplyEmailParserEvent, useDismissEmailParserEvent, useEmailParserEvents, useEmailParserForwardingAddress } from '@/features/email-parser/hooks';
+import { safeFormatDate } from '@/utils/formatters';
 import type { EmailParserEvent } from '@/features/email-parser/services';
 
 function formatParsedData(parsedData: Record<string, unknown>) {
@@ -96,7 +97,7 @@ export function EmailParserPage() {
                       </div>
                       <p className="mt-2 truncate text-sm font-semibold text-slate-900">{event.subject ?? 'No subject'}</p>
                       <p className="text-xs text-slate-500">
-                        {event.sender ?? 'Unknown sender'}{event.receivedAt ? ` - ${new Date(event.receivedAt).toLocaleString()}` : ''}
+                        {event.sender ?? 'Unknown sender'}{event.receivedAt ? ` - ${safeFormatDate(event.receivedAt, { dateStyle: 'short', timeStyle: 'short' })}` : ''}
                       </p>
                       <p className="mt-3 text-sm text-slate-600">{formatParsedData(event.parsedData)}</p>
                       {event.errorMessage && <p className="mt-2 text-xs text-red-600">{event.errorMessage}</p>}

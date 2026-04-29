@@ -32,4 +32,12 @@ describe('billingReal', () => {
 
     expect(subscription?.currentPeriodEnd).toBe('2026-05-01T00:00:00Z');
   });
+
+  it('drops invalid subscription dates', async () => {
+    api.get.mockResolvedValue({ data: { tier: 'navigator', status: 'active', current_period_ends_at: 'not-a-date' } });
+
+    const subscription = await billingReal.getSubscription();
+
+    expect(subscription?.currentPeriodEnd).toBeNull();
+  });
 });

@@ -33,11 +33,11 @@ describe('dashboardReal', () => {
   });
 
   it('handles null and partial fields', async () => {
-    api.get.mockResolvedValue({ data: { budget: null, health_score: null } });
+    api.get.mockResolvedValue({ data: { budget: null, health_score: null, due_soon_debts: [{ id: 'debt-1', name: 'Loan', due_on: null }] } });
 
     const dashboard = await dashboardReal.getDashboard();
 
     expect(dashboard.financialSummary.monthlyIncome).toBe(0);
-    expect(dashboard.dueSoon).toEqual([]);
+    expect(dashboard.dueSoon[0].daysUntilDue).toBe(0);
   });
 });

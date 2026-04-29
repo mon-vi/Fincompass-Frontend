@@ -1,6 +1,7 @@
 import { get, post } from '@/services/apiClient';
 import { handleApiError } from '@/services/apiError';
 import { apiPath, API } from '@/config/endpoints';
+import { toValidDate } from '@/utils/formatters';
 import type { LaravelResource } from '@/services/apiError';
 import type { UserTier } from '@/types/auth';
 import type { BillingApiAdapter, BillingRedirect, BillingSubscription, CheckoutPayload } from './billingApi';
@@ -14,10 +15,11 @@ interface LaravelBillingSubscription {
 }
 
 function mapSubscription(subscription: LaravelBillingSubscription): BillingSubscription {
+  const periodEnd = toValidDate(subscription.current_period_ends_at) ? subscription.current_period_ends_at! : null;
   return {
     plan: subscription.plan ?? subscription.tier ?? 'compass',
     status: subscription.status ?? 'none',
-    currentPeriodEnd: subscription.current_period_ends_at ?? null,
+    currentPeriodEnd: periodEnd,
     cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
   };
 }

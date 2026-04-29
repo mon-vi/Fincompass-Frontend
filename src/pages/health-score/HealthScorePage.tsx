@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/Badge';
 import { useHealthScore } from '@/features/health-score/hooks';
 import { ScoreGauge } from '@/features/health-score/components/ScoreGauge';
 import { ScoreBreakdown } from '@/features/health-score/components/ScoreBreakdown';
-import { formatDate } from '@/utils/formatters';
+import { formatDate, safeFormatDate } from '@/utils/formatters';
 
 const trendBadge = { improving: 'success', stable: 'default', declining: 'danger' } as const;
 
@@ -93,7 +93,7 @@ export function HealthScorePage() {
                   <span className="text-xs font-medium text-slate-600">{point.score}</span>
                   <div className="w-full rounded-t-sm bg-indigo-500" style={{ height: `${heightPct}%`, minHeight: 4 }} />
                   <span className="text-xs text-slate-400">
-                    {new Date(point.month + '-01').toLocaleString('en-US', { month: 'short' })}
+                    {safeFormatDate(point.month, { month: 'short' })}
                   </span>
                 </div>
               );

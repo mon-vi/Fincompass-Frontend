@@ -27,10 +27,13 @@ vi.mock('@/features/guidance/hooks', () => ({
 }));
 
 describe('DashboardPage', () => {
-  it('renders dashboard data from the backend hook', () => {
+  it('renders saved onboarding values from the backend hook', () => {
     render(<DashboardPage />, { wrapper: MemoryRouter });
 
     expect(screen.getByText(/Welcome back, Jane/)).toBeInTheDocument();
+    expect(screen.getAllByText('$5,000.00').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('$2,000.00').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('$500.00').length).toBeGreaterThan(0);
     expect(screen.getByText(/Visa/)).toBeInTheDocument();
     expect(screen.getByText('Pay highest APR card')).toBeInTheDocument();
     expect(screen.getByText('Open ARIA')).toBeInTheDocument();

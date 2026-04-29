@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { ENV } from '@/constants/env';
-import { TOKEN_KEYS } from '@/stores/authStore';
+import { TOKEN_KEYS, useAuthStore } from '@/stores/authStore';
 
 /**
  * Core Axios instance for all FinCompass API calls.
@@ -34,7 +34,6 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 apiClient.interceptors.response.use(undefined, async (error: unknown) => {
   if (axios.isAxiosError(error) && error.response?.status === 401) {
-    const { useAuthStore } = await import('@/stores/authStore');
     useAuthStore.getState().clearAuth();
     window.location.href = '/login';
   }

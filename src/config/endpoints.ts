@@ -24,6 +24,7 @@ export const API = {
   },
   DASHBOARD: '/dashboard',
   BUDGET: '/budget',
+  BUDGET_CALCULATE: '/budget/calculate',
   DEBTS: {
     LIST: '/debts',
     DETAIL: (id: string) => `/debts/${id}`,
@@ -37,14 +38,18 @@ export const API = {
   HEALTH_SCORE: {
     CURRENT: '/health-score',
     HISTORY: '/health-score/history',
+    GENERATE: '/health-score/generate',
   },
   TIMELINE: '/timeline',
+  TIMELINE_GENERATE: '/timeline/generate',
   ACTION_PLAN: {
     LIST: '/action-plan',
     DETAIL: (id: string) => `/action-plan/${id}`,
+    GENERATE: '/action-plan/generate',
   },
   GUIDANCE: {
     LIST: '/guidance',
+    GENERATE: '/guidance/generate',
     DISMISS: (id: string) => `/guidance/${id}/dismiss`,
   },
   NOTIFICATIONS: {

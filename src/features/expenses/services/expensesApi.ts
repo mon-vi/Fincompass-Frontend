@@ -73,3 +73,25 @@ export interface ExpensesApiAdapter {
   /** POST /api/v1/expenses/bulk */
   bulkCreate(payload: BulkCreateExpensePayload): Promise<Expense[]>;
 }
+
+export function buildOnboardingExpensePayload(data: Record<string, number>): BulkCreateExpensePayload {
+  const names: Record<string, string> = {
+    housing: 'Housing',
+    transportation: 'Transportation',
+    food: 'Food & groceries',
+    utilities: 'Utilities & subscriptions',
+    other: 'Other monthly expenses',
+  };
+
+  return {
+    expenses: Object.entries(data)
+      .filter(([, amount]) => amount > 0)
+      .map(([category, amount]) => ({
+        amount,
+        category: category as ExpenseCategory,
+        description: names[category] ?? 'Monthly expense',
+        date: new Date().toISOString().slice(0, 10),
+        isRecurring: true,
+      })),
+  };
+}

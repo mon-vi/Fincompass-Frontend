@@ -5,6 +5,7 @@ import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { ChatBubble, UsageMeter } from '@/features/aria/components';
 import { useAriaActiveConversation, useAriaUsage, useAriaInput } from '@/features/aria/hooks';
+import { safeFormatDate } from '@/utils/formatters';
 
 export function AriaPage() {
   const { messages, isLoading: historyLoading, isError: historyError, error: historyErrorValue } = useAriaActiveConversation();
@@ -90,7 +91,7 @@ export function AriaPage() {
 
         {atLimit && (
           <Alert variant="warning">
-            You've reached your monthly message limit{usage?.resetsAt ? ` for ${new Date(usage.resetsAt).toLocaleDateString([], { month: 'long', year: 'numeric' })}` : ''}.
+            You've reached your monthly message limit{usage?.resetsAt ? ` for ${safeFormatDate(usage.resetsAt, { month: 'long', year: 'numeric' })}` : ''}.
           </Alert>
         )}
 

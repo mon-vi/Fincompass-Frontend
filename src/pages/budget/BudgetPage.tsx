@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/Loader';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useBudget } from '@/features/budget/hooks';
 import { BudgetCategoryRow, BudgetEditForm } from '@/features/budget/components';
-import { formatCurrency } from '@/utils/formatters';
+import { formatCurrency, safeFormatDate } from '@/utils/formatters';
 
 export function BudgetPage() {
   const { data: budget, isLoading, isError, error } = useBudget();
@@ -27,7 +27,7 @@ export function BudgetPage() {
     <div className="space-y-8">
       <SectionHeader
         title="Budget"
-        subtitle={budget ? `${new Date(budget.month + '-01').toLocaleString('en-US', { month: 'long', year: 'numeric' })}` : 'Monthly budget'}
+        subtitle={budget ? safeFormatDate(budget.month, { month: 'long', year: 'numeric' }, 'Monthly budget') : 'Monthly budget'}
       />
 
       {/* Overall summary */}

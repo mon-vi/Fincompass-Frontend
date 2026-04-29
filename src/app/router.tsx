@@ -6,6 +6,7 @@ import { RequireAuth } from './guards/RequireAuth';
 import { RequireOnboarding } from './guards/RequireOnboarding';
 import { RedirectIfAuth } from './guards/RedirectIfAuth';
 import { RequireTier } from './guards/RequireTier';
+import { RouteErrorBoundary } from './RouteErrorBoundary';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
@@ -32,6 +33,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 export const router = createBrowserRouter([
   {
     element: <RedirectIfAuth />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         element: <AuthLayout />,
@@ -46,6 +48,7 @@ export const router = createBrowserRouter([
   },
   {
     element: <RequireAuth />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         path: ROUTES.ONBOARDING,
@@ -91,6 +94,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: ROUTES.HOME, element: <Navigate to={ROUTES.DASHBOARD} replace /> },
-  { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> },
+  { path: ROUTES.HOME, element: <Navigate to={ROUTES.DASHBOARD} replace />, errorElement: <RouteErrorBoundary /> },
+  { path: ROUTES.NOT_FOUND, element: <NotFoundPage />, errorElement: <RouteErrorBoundary /> },
 ]);

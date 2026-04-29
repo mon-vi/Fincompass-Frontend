@@ -53,7 +53,7 @@ function mapExpense(item: LaravelOcrExtractedItem): OcrExtractedExpense {
     type: 'expense',
     amount: numberValue(item.amount),
     description: item.description ?? item.name ?? 'Extracted expense',
-    date: item.date ?? new Date().toISOString().slice(0, 10),
+    date: item.date ?? null,
     suggestedCategory: item.suggested_category ?? item.category ?? 'other',
     confidence: confidenceValue(item.confidence),
   };

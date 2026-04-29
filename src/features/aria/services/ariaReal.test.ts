@@ -19,6 +19,14 @@ describe('ariaReal', () => {
     expect(usage).toEqual({ used: 3, limit: 50, resetsAt: '2026-04-01' });
   });
 
+  it('handles missing usage reset date', async () => {
+    client.get.mockResolvedValue({ data: { data: { messages_used: 3, messages_limit: 50 } } });
+
+    const usage = await ariaReal.getUsage();
+
+    expect(usage.resetsAt).toBeNull();
+  });
+
   it('sends backend message payload and maps returned messages', async () => {
     client.post.mockResolvedValue({
       data: {

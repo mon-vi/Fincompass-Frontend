@@ -1,4 +1,5 @@
 import { cn } from '@/utils/cn';
+import { safeFormatDate } from '@/utils/formatters';
 import type { AriaUsage } from '../services';
 
 interface UsageMeterProps {
@@ -11,7 +12,7 @@ export function UsageMeter({ usage, className }: UsageMeterProps) {
   const isNearLimit = pct >= 80;
   const isAtLimit = pct >= 100;
 
-  const resets = new Date(usage.resetsAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const resets = safeFormatDate(usage.resetsAt, { month: 'short', day: 'numeric' });
 
   return (
     <div className={cn('rounded-xl border border-slate-200 bg-white p-3', className)}>
