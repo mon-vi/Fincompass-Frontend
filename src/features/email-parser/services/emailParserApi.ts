@@ -1,4 +1,4 @@
-export type EmailParserEventStatus = 'matched' | 'unmatched' | 'applied' | 'dismissed' | 'ignored' | 'failed';
+export type EmailParserEventStatus = 'pending' | 'review_ready' | 'matched' | 'unmatched' | 'applied' | 'dismissed' | 'ignored' | 'failed';
 
 export interface EmailParserForwardingAddress {
   address: string;
@@ -22,9 +22,9 @@ export interface ApplyEmailParserEventPayload {
 }
 
 export interface EmailParserApiAdapter {
-  getForwardingAddress(): Promise<EmailParserForwardingAddress>;
+  getForwardingAddress(): Promise<EmailParserForwardingAddress | null>;
   listEvents(): Promise<EmailParserEvent[]>;
   getEvent(id: string): Promise<EmailParserEvent>;
-  applyEvent(id: string, payload?: ApplyEmailParserEventPayload): Promise<EmailParserEvent>;
+  applyEvent(id: string, payload?: ApplyEmailParserEventPayload): Promise<void>;
   dismissEvent(id: string): Promise<EmailParserEvent>;
 }

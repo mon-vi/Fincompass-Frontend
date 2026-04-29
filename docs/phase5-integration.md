@@ -46,4 +46,4 @@ Unmatched Email Parser events are shown but not yet linkable to a specific exist
 
 ARIA conversation creation assumes `POST /aria/conversations` is available because messages require a conversation id.
 
-OCR confirm sends edited selected items as `selected_items`; backend validation remains authoritative.
+OCR confirm sends edited backend-supported `fields`; backend validation remains authoritative.

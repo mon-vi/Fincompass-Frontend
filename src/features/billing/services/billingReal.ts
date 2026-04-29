@@ -9,7 +9,7 @@ interface LaravelBillingSubscription {
   plan?: UserTier;
   tier?: UserTier;
   status?: BillingSubscription['status'];
-  current_period_end?: string | null;
+  current_period_ends_at?: string | null;
   cancel_at_period_end?: boolean;
 }
 
@@ -17,16 +17,16 @@ function mapSubscription(subscription: LaravelBillingSubscription): BillingSubsc
   return {
     plan: subscription.plan ?? subscription.tier ?? 'compass',
     status: subscription.status ?? 'none',
-    currentPeriodEnd: subscription.current_period_end ?? null,
+    currentPeriodEnd: subscription.current_period_ends_at ?? null,
     cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
   };
 }
 
 export const billingReal: BillingApiAdapter = {
-  async getSubscription(): Promise<BillingSubscription> {
+  async getSubscription(): Promise<BillingSubscription | null> {
     try {
-      const res = await get<LaravelResource<LaravelBillingSubscription>>(apiPath(API.BILLING.SUBSCRIPTION));
-      return mapSubscription(res.data);
+      const res = await get<LaravelResource<LaravelBillingSubscription | null>>(apiPath(API.BILLING.SUBSCRIPTION));
+      return res.data ? mapSubscription(res.data) : null;
     } catch (err) {
       handleApiError(err);
     }
@@ -34,7 +34,10 @@ export const billingReal: BillingApiAdapter = {
 
   async createCheckout(payload: CheckoutPayload): Promise<BillingRedirect> {
     try {
-      const res = await post<LaravelResource<{ url: string }>>(apiPath(API.BILLING.CHECKOUT), { plan: payload.plan });
+      const res = await post<LaravelResource<{ url: string }>>(apiPath(API.BILLING.CHECKOUT), {
+        tier: payload.plan,
+        billing_cycle: payload.billingCycle ?? 'monthly',
+      });
       return { url: res.data.url };
     } catch (err) {
       handleApiError(err);

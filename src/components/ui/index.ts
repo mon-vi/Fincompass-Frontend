@@ -14,3 +14,4 @@ export { FeatureGate } from './FeatureGate';
 export { LockedCard } from './LockedCard';
 export { UpgradePrompt } from './UpgradePrompt';
 export { RetryButton } from './RetryButton';
+export { PremiumErrorAlert } from './PremiumErrorAlert';

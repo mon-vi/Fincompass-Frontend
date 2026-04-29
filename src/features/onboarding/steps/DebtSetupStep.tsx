@@ -1,4 +1,4 @@
-import { useForm, Controller, type Resolver } from 'react-hook-form';
+import { useForm, Controller, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/utils/cn';
 import { Input } from '@/components/ui/Input';
@@ -18,7 +18,6 @@ export function DebtSetupStep({ onComplete, onBack, defaultValues, isSubmitting,
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
   } = useForm<Step3Data>({
@@ -31,8 +30,8 @@ export function DebtSetupStep({ onComplete, onBack, defaultValues, isSubmitting,
     },
   });
 
-  const hasDebts = watch('hasDebts');
-  const selectedDebtType = watch('primaryDebtType');
+  const hasDebts = useWatch({ control, name: 'hasDebts' });
+  const selectedDebtType = useWatch({ control, name: 'primaryDebtType' });
 
   return (
     <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-6">

@@ -6,7 +6,7 @@ import type { LaravelResource } from '@/services/apiError';
 import type { ExpenseCategory } from '@/features/expenses/services';
 import type { OcrApiAdapter, OcrSession, OcrExtractedDebt, OcrExtractedExpense, OcrExtractedItem, ConfirmOcrPayload, ConfirmOcrResult } from './ocrApi';
 
-type LaravelOcrStatus = OcrSession['status'] | 'ready';
+type LaravelOcrStatus = OcrSession['status'];
 
 interface LaravelOcrExtractedItem {
   id: string;
@@ -28,19 +28,13 @@ interface LaravelOcrExtractedItem {
 interface LaravelOcrSession {
   id: string;
   status: LaravelOcrStatus;
-  file_name?: string;
-  fileName?: string;
-  file_size?: number;
-  fileSize?: number;
-  uploaded_at?: string;
-  uploadedAt?: string;
+  original_filename?: string;
+  size_bytes?: number;
+  created_at?: string;
   processed_at?: string | null;
-  processedAt?: string | null;
-  extracted_items?: LaravelOcrExtractedItem[];
-  extracted_expenses?: LaravelOcrExtractedItem[];
-  extracted_debts?: LaravelOcrExtractedItem[];
+  extracted_fields?: Record<string, unknown> | null;
+  confidence_score?: number | string | null;
   error_message?: string | null;
-  errorMessage?: string | null;
 }
 
 function numberValue(value: unknown, fallback = 0): number {
@@ -84,44 +78,59 @@ function mapItem(item: LaravelOcrExtractedItem, fallbackType: 'expense' | 'debt'
 }
 
 function mapSession(session: LaravelOcrSession): OcrSession {
-  const extractedExpenses = (session.extracted_expenses ?? [])
-    .map((item) => mapItem(item, 'expense'))
-    .filter((item): item is OcrExtractedExpense => item.type === 'expense');
-  const extractedDebts = (session.extracted_debts ?? [])
-    .map((item) => mapItem(item, 'debt'))
-    .filter((item): item is OcrExtractedDebt => item.type === 'debt');
-  const extractedItems = session.extracted_items
-    ? session.extracted_items.map((item) => mapItem(item, item.type ?? 'expense'))
-    : [...extractedExpenses, ...extractedDebts];
+  const fields = session.extracted_fields ?? {};
+  const fallbackType = fields.kind === 'expense' ? 'expense' : 'debt';
+  const extractedItems = Object.keys(fields).length > 0
+    ? [mapItem({
+      id: session.id,
+      type: fallbackType,
+      amount: fields.amount as number | string | undefined,
+      balance: fields.current_balance as number | string | undefined,
+      description: typeof fields.name === 'string' ? fields.name : undefined,
+      name: typeof fields.name === 'string' ? fields.name : undefined,
+      category: fields.category as ExpenseCategory | undefined,
+      debt_type: typeof fields.type === 'string' ? fields.type : null,
+      interest_rate: fields.interest_rate as number | string | null,
+      minimum_payment: fields.minimum_payment as number | string | null,
+      due_date: null,
+      confidence: session.confidence_score,
+    }, fallbackType)]
+    : [];
 
   return {
     id: session.id,
-    status: session.status === 'ready' ? 'review_ready' : session.status,
-    fileName: session.file_name ?? session.fileName ?? 'Uploaded document',
-    fileSize: session.file_size ?? session.fileSize ?? 0,
-    uploadedAt: session.uploaded_at ?? session.uploadedAt ?? '',
-    processedAt: session.processed_at ?? session.processedAt ?? null,
-    extractedExpenses: extractedItems.filter((item): item is OcrExtractedExpense => item.type === 'expense'),
-    extractedDebts: extractedItems.filter((item): item is OcrExtractedDebt => item.type === 'debt'),
+    status: session.status,
+    fileName: session.original_filename ?? 'Uploaded document',
+    fileSize: session.size_bytes ?? 0,
+    uploadedAt: session.created_at ?? '',
+    processedAt: session.processed_at ?? null,
     extractedItems,
-    errorMessage: session.error_message ?? session.errorMessage ?? null,
+    errorMessage: session.error_message ?? null,
   };
 }
 
 function toConfirmPayload(payload: ConfirmOcrPayload) {
+  const item = payload.items[0];
+  if (!item) return { fields: {} };
+  if (item.type === 'expense') {
+    return {
+      fields: {
+        kind: 'expense',
+        name: item.description,
+        category: item.suggestedCategory,
+        amount: item.amount,
+      },
+    };
+  }
   return {
-    selected_items: payload.items.map((item) => ({
-      id: item.id,
-      type: item.type,
-      amount: item.amount,
-      description: item.description,
-      date: item.type === 'expense' ? item.date : undefined,
-      suggested_category: item.type === 'expense' ? item.suggestedCategory : undefined,
-      debt_type: item.type === 'debt' ? item.debtType : undefined,
-      interest_rate: item.type === 'debt' ? item.interestRate : undefined,
-      minimum_payment: item.type === 'debt' ? item.minimumPayment : undefined,
-      due_date: item.type === 'debt' ? item.dueDate : undefined,
-    })),
+    fields: {
+      kind: 'debt',
+      name: item.description,
+      type: item.debtType ?? 'other',
+      current_balance: item.amount,
+      interest_rate: item.interestRate ?? 0,
+      minimum_payment: item.minimumPayment ?? 0,
+    },
   };
 }
 
@@ -161,11 +170,12 @@ export const ocrReal: OcrApiAdapter = {
 
   async confirmSession(sessionId: string, payload: ConfirmOcrPayload): Promise<ConfirmOcrResult> {
     try {
-      const res = await patch<LaravelResource<ConfirmOcrResult> | ConfirmOcrResult>(
+      const res = await patch<LaravelResource<{ id?: string }> | { id?: string }>(
         apiPath(API.OCR.CONFIRM(sessionId)),
         toConfirmPayload(payload),
       );
-      return 'data' in res ? res.data : res;
+      const created = 'data' in res ? res.data : res;
+      return { createdId: created.id ?? null };
     } catch (err) {
       handleApiError(err);
     }

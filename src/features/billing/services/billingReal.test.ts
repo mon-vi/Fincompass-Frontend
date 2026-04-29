@@ -1,0 +1,35 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { billingReal } from './billingReal';
+
+const api = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }));
+
+vi.mock('@/services/apiClient', () => ({ get: api.get, post: api.post }));
+
+describe('billingReal', () => {
+  beforeEach(() => {
+    api.get.mockReset();
+    api.post.mockReset();
+  });
+
+  it('sends checkout tier and billing cycle', async () => {
+    api.post.mockResolvedValue({ data: { url: 'https://checkout.example' } });
+
+    await billingReal.createCheckout({ plan: 'cfo' });
+
+    expect(api.post).toHaveBeenCalledWith('/api/v1/billing/checkout', { tier: 'cfo', billing_cycle: 'monthly' });
+  });
+
+  it('handles null subscription safely', async () => {
+    api.get.mockResolvedValue({ data: null });
+
+    await expect(billingReal.getSubscription()).resolves.toBeNull();
+  });
+
+  it('maps current period end from backend field', async () => {
+    api.get.mockResolvedValue({ data: { tier: 'navigator', status: 'active', current_period_ends_at: '2026-05-01T00:00:00Z' } });
+
+    const subscription = await billingReal.getSubscription();
+
+    expect(subscription?.currentPeriodEnd).toBe('2026-05-01T00:00:00Z');
+  });
+});

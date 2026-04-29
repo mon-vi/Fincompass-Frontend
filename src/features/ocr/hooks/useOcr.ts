@@ -15,8 +15,8 @@ export function useOcrSession(sessionId: string | null) {
     enabled: !!sessionId,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
-      // Poll every 1.5 s while the session is still processing
-      return status === 'processing' || status === 'uploading' ? 1500 : false;
+      // Poll every 1.5 s while the backend has not reached a terminal state.
+      return status === 'uploaded' || status === 'pending' || status === 'processing' || status === 'uploading' ? 1500 : false;
     },
   });
   return query;

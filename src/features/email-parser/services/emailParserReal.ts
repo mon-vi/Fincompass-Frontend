@@ -31,9 +31,9 @@ function mapEvent(event: LaravelEmailParserEvent): EmailParserEvent {
 }
 
 export const emailParserReal: EmailParserApiAdapter = {
-  async getForwardingAddress(): Promise<EmailParserForwardingAddress> {
+  async getForwardingAddress(): Promise<EmailParserForwardingAddress | null> {
     try {
-      const res = await get<LaravelResource<{ address: string }> | { address: string }>(apiPath(API.EMAIL_PARSER.FORWARDING_ADDRESS));
+      const res = await get<LaravelResource<{ address: string } | null> | { address: string }>(apiPath(API.EMAIL_PARSER.FORWARDING_ADDRESS));
       return 'data' in res ? res.data : res;
     } catch (err) {
       handleApiError(err);
@@ -58,13 +58,12 @@ export const emailParserReal: EmailParserApiAdapter = {
     }
   },
 
-  async applyEvent(id: string, payload?: ApplyEmailParserEventPayload): Promise<EmailParserEvent> {
+  async applyEvent(id: string, payload?: ApplyEmailParserEventPayload): Promise<void> {
     try {
-      const res = await patch<LaravelResource<LaravelEmailParserEvent>>(apiPath(API.EMAIL_PARSER.APPLY(id)), {
+      await patch<unknown>(apiPath(API.EMAIL_PARSER.APPLY(id)), {
         target_id: payload?.targetId,
         target_type: payload?.targetType,
       });
-      return mapEvent(res.data);
     } catch (err) {
       handleApiError(err);
     }

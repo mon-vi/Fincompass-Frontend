@@ -44,6 +44,7 @@ export interface DashboardData {
   actionPlan: ActionPlanSummary;
   topGuidance: GuidanceSummary[];
   dueSoon: DueSoonDebt[];
+  notificationCount: number;
 }
 
 export interface DashboardApiAdapter {

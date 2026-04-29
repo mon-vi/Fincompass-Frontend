@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
+import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { OcrExpenseRow } from '@/features/ocr/components';
 import { useOcrSession, useOcrConfirm, useOcrAbandon, useOcrSelection } from '@/features/ocr/hooks';
@@ -39,7 +40,7 @@ export function OcrReviewPage() {
     confirm.mutate(
       { items: selectedItems },
       {
-        onSuccess: () => navigate(ROUTES.EXPENSES),
+        onSuccess: () => navigate(ROUTES.DEBTS),
       },
     );
   };
@@ -149,9 +150,10 @@ export function OcrReviewPage() {
           </button>
 
           {(confirm.isError || abandon.isError) && (
-            <Alert variant="error" className="flex-1">
-              {(confirm.error as Error)?.message ?? (abandon.error as Error)?.message ?? 'OCR action failed. Please try again.'}
-            </Alert>
+            <PremiumErrorAlert
+              className="flex-1"
+              message={(confirm.error as Error)?.message ?? (abandon.error as Error)?.message ?? 'OCR action failed. Please try again.'}
+            />
           )}
 
           <button
@@ -159,7 +161,7 @@ export function OcrReviewPage() {
             onClick={handleConfirm}
             className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
           >
-            {confirm.isPending ? 'Importing…' : `Import ${selected.size} expense${selected.size !== 1 ? 's' : ''}`}
+            {confirm.isPending ? 'Importing...' : `Import ${selected.size} item${selected.size !== 1 ? 's' : ''}`}
           </button>
         </div>
       )}

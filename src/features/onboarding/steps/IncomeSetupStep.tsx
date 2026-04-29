@@ -1,4 +1,4 @@
-import { useForm, type Resolver } from 'react-hook-form';
+import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/utils/cn';
 import { Input } from '@/components/ui/Input';
@@ -18,14 +18,14 @@ export function IncomeSetupStep({ onComplete, onBack, defaultValues, isSubmittin
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<Step2Data>({
     resolver: zodResolver(step2Schema) as Resolver<Step2Data>,
     defaultValues,
   });
 
-  const selectedType = watch('incomeType');
+  const selectedType = useWatch({ control, name: 'incomeType' });
 
   return (
     <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-6">

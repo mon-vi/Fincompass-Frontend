@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Alert } from '@/components/ui/Alert';
+import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { ChatBubble, UsageMeter } from '@/features/aria/components';
 import { useAriaActiveConversation, useAriaUsage, useAriaInput } from '@/features/aria/hooks';
@@ -84,11 +85,13 @@ export function AriaPage() {
       {/* Input */}
       <div className="space-y-2">
         {isError && (
-          <Alert variant="error">{(error as Error)?.message ?? 'Failed to send message. Please try again.'}</Alert>
+          <PremiumErrorAlert message={(error as Error)?.message ?? 'Failed to send message. Please try again.'} />
         )}
 
         {atLimit && (
-          <Alert variant="warning">You've reached your monthly message limit. It resets on {usage ? new Date(usage.resetsAt).toLocaleDateString([], { month: 'long', day: 'numeric' }) : ''}.</Alert>
+          <Alert variant="warning">
+            You've reached your monthly message limit{usage?.resetsAt ? ` for ${new Date(usage.resetsAt).toLocaleDateString([], { month: 'long', year: 'numeric' })}` : ''}.
+          </Alert>
         )}
 
         <div className="flex gap-3">

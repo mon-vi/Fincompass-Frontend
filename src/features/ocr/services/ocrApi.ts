@@ -1,6 +1,6 @@
 import type { ExpenseCategory } from '@/features/expenses/services/expensesApi';
 
-export type OcrSessionStatus = 'uploading' | 'processing' | 'review_ready' | 'ready' | 'confirmed' | 'failed' | 'abandoned';
+export type OcrSessionStatus = 'uploaded' | 'pending' | 'uploading' | 'processing' | 'review_ready' | 'confirmed' | 'failed' | 'abandoned';
 
 export type OcrExtractedItemType = 'expense' | 'debt';
 
@@ -35,8 +35,6 @@ export interface OcrSession {
   fileSize: number;
   uploadedAt: string;
   processedAt: string | null;
-  extractedExpenses: OcrExtractedExpense[];
-  extractedDebts: OcrExtractedDebt[];
   extractedItems: OcrExtractedItem[];
   errorMessage: string | null;
 }
@@ -49,7 +47,7 @@ export interface ConfirmOcrPayload {
 }
 
 export interface ConfirmOcrResult {
-  imported: number;
+  createdId: string | null;
 }
 
 export interface OcrApiAdapter {

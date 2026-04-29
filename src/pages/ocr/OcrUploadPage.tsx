@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
+import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { UploadDropzone } from '@/features/ocr/components';
 import { useOcrUpload, useOcrSession } from '@/features/ocr/hooks';
@@ -17,12 +18,12 @@ export function OcrUploadPage() {
   const { data: session } = useOcrSession(sessionId);
 
   useEffect(() => {
-    if (session?.status === 'review_ready' || session?.status === 'ready') {
+    if (session?.status === 'review_ready') {
       navigate(ROUTES.OCR_REVIEW.replace(':id', session.id), { replace: true });
     }
   }, [navigate, session]);
 
-  const isProcessing = isPending || session?.status === 'processing' || session?.status === 'uploading';
+  const isProcessing = isPending || session?.status === 'uploaded' || session?.status === 'pending' || session?.status === 'processing' || session?.status === 'uploading';
 
   return (
     <div className="mx-auto max-w-xl space-y-8">
@@ -74,9 +75,7 @@ export function OcrUploadPage() {
         )}
 
         {isError && (
-          <Alert variant="error" className="mt-4">
-            {(error as Error)?.message ?? 'Upload failed. Please try again.'}
-          </Alert>
+          <PremiumErrorAlert className="mt-4" message={(error as Error)?.message ?? 'Upload failed. Please try again.'} />
         )}
       </Card>
 

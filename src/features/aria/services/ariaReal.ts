@@ -20,9 +20,10 @@ interface LaravelAriaConversation {
 }
 
 interface LaravelAriaUsage {
-  used: number;
-  limit: number;
-  resets_at: string;
+  month?: string;
+  messages_used: number;
+  messages_limit: number;
+  messages_remaining?: number;
 }
 
 function mapMessage(m: LaravelAriaMessage): AriaChatMessage {
@@ -40,7 +41,7 @@ function mapConversation(conversation: LaravelAriaConversation): AriaConversatio
 }
 
 function mapUsage(u: LaravelAriaUsage): AriaUsage {
-  return { used: u.used, limit: u.limit, resetsAt: u.resets_at };
+  return { used: u.messages_used, limit: u.messages_limit, resetsAt: u.month ?? '' };
 }
 
 export const ariaReal: AriaApiAdapter = {
@@ -76,12 +77,13 @@ export const ariaReal: AriaApiAdapter = {
       const { data } = await apiClient.post<LaravelResource<{
         conversation?: LaravelAriaConversation;
         messages?: LaravelAriaMessage[];
+        user_message?: LaravelAriaMessage;
         message?: LaravelAriaMessage;
         assistant_message?: LaravelAriaMessage;
         usage: LaravelAriaUsage;
       }>>(
         apiPath(API.ARIA.CONVERSATION_MESSAGES(payload.conversationId)),
-        { content: payload.content },
+        { message: payload.content },
       );
 
       const conversation = data.data.conversation ? mapConversation(data.data.conversation) : {
@@ -92,7 +94,9 @@ export const ariaReal: AriaApiAdapter = {
         updatedAt: '',
       };
       const messages = data.data.messages?.map(mapMessage)
-        ?? [data.data.assistant_message ?? data.data.message].filter(Boolean).map((message) => mapMessage(message!));
+        ?? [data.data.user_message, data.data.assistant_message ?? data.data.message]
+          .filter(Boolean)
+          .map((message) => mapMessage(message!));
       return { conversation, messages, usage: mapUsage(data.data.usage) };
     } catch (e) {
       handleApiError(e);

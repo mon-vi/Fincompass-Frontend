@@ -3,8 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { User, AuthTokens } from '@/types/auth';
 
 export const TOKEN_KEYS = {
-  ACCESS: 'fincompass:access_token',
-  REFRESH: 'fincompass:refresh_token',
+  ACCESS: 'fincompass:token',
 } as const;
 
 interface AuthStore {
@@ -24,13 +23,11 @@ export const useAuthStore = create<AuthStore>()(
 
       setAuth: (user, tokens) => {
         localStorage.setItem(TOKEN_KEYS.ACCESS, tokens.accessToken);
-        localStorage.setItem(TOKEN_KEYS.REFRESH, tokens.refreshToken);
         set({ user, isAuthenticated: true });
       },
 
       clearAuth: () => {
         localStorage.removeItem(TOKEN_KEYS.ACCESS);
-        localStorage.removeItem(TOKEN_KEYS.REFRESH);
         set({ user: null, isAuthenticated: false });
       },
 

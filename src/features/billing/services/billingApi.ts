@@ -9,6 +9,7 @@ export interface BillingSubscription {
 
 export interface CheckoutPayload {
   plan: UserTier;
+  billingCycle?: 'monthly' | 'annual';
 }
 
 export interface BillingRedirect {
@@ -16,7 +17,7 @@ export interface BillingRedirect {
 }
 
 export interface BillingApiAdapter {
-  getSubscription(): Promise<BillingSubscription>;
+  getSubscription(): Promise<BillingSubscription | null>;
   createCheckout(payload: CheckoutPayload): Promise<BillingRedirect>;
   createPortal(): Promise<BillingRedirect>;
 }

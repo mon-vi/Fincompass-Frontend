@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
+import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { useBillingCheckout, useBillingPortal, useBillingSubscription } from '@/features/billing/hooks';
 import type { UserTier } from '@/types/auth';
@@ -66,9 +67,7 @@ export function BillingPage() {
       )}
 
       {(checkout.isError || portal.isError) && (
-        <Alert variant="error">
-          {(checkout.error as Error)?.message ?? (portal.error as Error)?.message ?? 'Billing request failed. Please try again.'}
-        </Alert>
+        <PremiumErrorAlert message={(checkout.error as Error)?.message ?? (portal.error as Error)?.message ?? 'Billing request failed. Please try again.'} />
       )}
 
       {subscription.isLoading && (

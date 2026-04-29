@@ -10,10 +10,9 @@ export const API = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
-    ME: '/auth/me',
+    ME: '/users/me',
   },
   ONBOARDING: {
     STATUS: '/onboarding',

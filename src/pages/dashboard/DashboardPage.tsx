@@ -26,6 +26,7 @@ export function DashboardPage() {
     actionPlan: { total: 0, completed: 0, nextActionTitle: null },
     topGuidance: [],
     dueSoon: [],
+    notificationCount: 0,
   };
   const actionPlanProgress = dashboard.actionPlan.total > 0
     ? (dashboard.actionPlan.completed / dashboard.actionPlan.total) * 100

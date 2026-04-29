@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
+import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { useApplyEmailParserEvent, useDismissEmailParserEvent, useEmailParserEvents, useEmailParserForwardingAddress } from '@/features/email-parser/hooks';
 import type { EmailParserEvent } from '@/features/email-parser/services';
@@ -55,16 +56,20 @@ export function EmailParserPage() {
         {forwardingAddress.isLoading ? (
           <Skeleton className="h-8 w-72" />
         ) : forwardingAddress.isError ? (
-          <Alert variant="error">{(forwardingAddress.error as Error)?.message ?? 'Failed to load forwarding address.'}</Alert>
-        ) : (
+          <PremiumErrorAlert message={(forwardingAddress.error as Error)?.message ?? 'Failed to load forwarding address.'} />
+        ) : forwardingAddress.data ? (
           <div className="rounded-lg bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800">
-            {forwardingAddress.data?.address}
+            {forwardingAddress.data.address}
+          </div>
+        ) : (
+          <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600">
+            No forwarding address is set up yet. Create one from the backend or account setup flow before forwarding emails.
           </div>
         )}
       </Card>
 
       {notice && <Alert variant="success">{notice}</Alert>}
-      {actionError && <Alert variant="error">{actionError}</Alert>}
+      {actionError && <PremiumErrorAlert message={actionError} />}
 
       <Card>
         <CardHeader>
@@ -76,7 +81,7 @@ export function EmailParserPage() {
             {[1, 2, 3].map((item) => <Skeleton key={item} className="h-24 w-full" />)}
           </div>
         ) : events.isError ? (
-          <Alert variant="error">{(events.error as Error)?.message ?? 'Failed to load parsed events.'}</Alert>
+          <PremiumErrorAlert message={(events.error as Error)?.message ?? 'Failed to load parsed events.'} />
         ) : events.data && events.data.length > 0 ? (
           <div className="space-y-3">
             {events.data.map((event) => {
