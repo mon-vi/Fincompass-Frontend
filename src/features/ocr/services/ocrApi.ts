@@ -1,15 +1,32 @@
 import type { ExpenseCategory } from '@/features/expenses/services/expensesApi';
 
-export type OcrSessionStatus = 'uploading' | 'processing' | 'ready' | 'confirmed' | 'failed';
+export type OcrSessionStatus = 'uploading' | 'processing' | 'review_ready' | 'ready' | 'confirmed' | 'failed' | 'abandoned';
+
+export type OcrExtractedItemType = 'expense' | 'debt';
 
 export interface OcrExtractedExpense {
   id: string;
+  type: 'expense';
   amount: number;
   description: string;
   date: string;
   suggestedCategory: ExpenseCategory;
   confidence: number;
 }
+
+export interface OcrExtractedDebt {
+  id: string;
+  type: 'debt';
+  amount: number;
+  description: string;
+  debtType: string | null;
+  interestRate: number | null;
+  minimumPayment: number | null;
+  dueDate: string | null;
+  confidence: number;
+}
+
+export type OcrExtractedItem = OcrExtractedExpense | OcrExtractedDebt;
 
 export interface OcrSession {
   id: string;
@@ -19,12 +36,16 @@ export interface OcrSession {
   uploadedAt: string;
   processedAt: string | null;
   extractedExpenses: OcrExtractedExpense[];
+  extractedDebts: OcrExtractedDebt[];
+  extractedItems: OcrExtractedItem[];
   errorMessage: string | null;
 }
 
+export type OcrConfirmItem = OcrExtractedItem;
+
 export interface ConfirmOcrPayload {
-  /** IDs of extracted expenses the user chose to import */
-  selectedIds: string[];
+  /** Edited extracted items the user chose to import. */
+  items: OcrConfirmItem[];
 }
 
 export interface ConfirmOcrResult {
@@ -32,10 +53,12 @@ export interface ConfirmOcrResult {
 }
 
 export interface OcrApiAdapter {
-  /** POST /api/v1/ocr/upload — multipart/form-data */
-  upload(file: File): Promise<{ sessionId: string }>;
-  /** GET /api/v1/ocr/sessions/{id} */
+  /** POST /api/v1/ocr/uploads — multipart/form-data */
+  upload(file: File, onProgress?: (progress: number) => void): Promise<{ sessionId: string }>;
+  /** GET /api/v1/ocr/uploads/{id} */
   getSession(sessionId: string): Promise<OcrSession>;
-  /** POST /api/v1/ocr/sessions/{id}/confirm */
+  /** PATCH /api/v1/ocr/uploads/{id}/confirm */
   confirmSession(sessionId: string, payload: ConfirmOcrPayload): Promise<ConfirmOcrResult>;
+  /** PATCH /api/v1/ocr/uploads/{id}/abandon */
+  abandonSession(sessionId: string): Promise<void>;
 }

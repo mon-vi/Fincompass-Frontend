@@ -3,18 +3,29 @@ import { cn } from '@/utils/cn';
 
 interface UploadDropzoneProps {
   onFile: (file: File) => void;
+  onError?: (message: string) => void;
   isUploading?: boolean;
   accept?: string;
 }
 
 const ACCEPTED = '.pdf,.png,.jpg,.jpeg';
+const ACCEPTED_TYPES = new Set(['application/pdf', 'image/png', 'image/jpeg']);
+const MAX_SIZE_BYTES = 10 * 1024 * 1024;
 
-export function UploadDropzone({ onFile, isUploading, accept = ACCEPTED }: UploadDropzoneProps) {
+export function UploadDropzone({ onFile, onError, isUploading, accept = ACCEPTED }: UploadDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFile = (file: File) => {
     if (!file) return;
+    if (!ACCEPTED_TYPES.has(file.type)) {
+      onError?.('Upload a PDF, PNG, JPG, or JPEG file.');
+      return;
+    }
+    if (file.size > MAX_SIZE_BYTES) {
+      onError?.('File is too large. The maximum size is 10 MB.');
+      return;
+    }
     onFile(file);
   };
 

@@ -135,6 +135,7 @@ export function AppLayout() {
   const logout = useLogout();
   const navigate = useNavigate();
   const { unreadCount } = useNotifications();
+  const hasNavigatorAccess = useTierAccess('navigator');
   const hasCfoAccess = useTierAccess('cfo');
 
   const mainNav: NavItem[] = [
@@ -142,6 +143,7 @@ export function AppLayout() {
     { to: ROUTES.DEBTS, label: 'Debts', icon: <DebtsIcon /> },
     { to: ROUTES.BUDGET, label: 'Budget', icon: <BudgetIcon /> },
     { to: ROUTES.EXPENSES, label: 'Expenses', icon: <ExpensesIcon /> },
+    ...(hasNavigatorAccess ? [{ to: ROUTES.EMAIL_PARSER, label: 'Email Parser', icon: <ReceiptIcon /> }] : []),
     { to: ROUTES.HEALTH_SCORE, label: 'Health Score', icon: <HeartIcon /> },
     { to: ROUTES.TIMELINE, label: 'Timeline', icon: <CalendarIcon /> },
     { to: ROUTES.ACTION_PLAN, label: 'Action Plan', icon: <ListIcon /> },

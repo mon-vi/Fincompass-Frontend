@@ -1,12 +1,14 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
 import { Skeleton } from '@/components/ui/Loader';
 import { OcrExpenseRow } from '@/features/ocr/components';
-import { useOcrSession, useOcrConfirm, useOcrSelection } from '@/features/ocr/hooks';
+import { useOcrSession, useOcrConfirm, useOcrAbandon, useOcrSelection } from '@/features/ocr/hooks';
 import { formatCurrency } from '@/utils/formatters';
 import { ROUTES } from '@/constants/routes';
+import type { OcrExtractedItem } from '@/features/ocr/services';
 
 export function OcrReviewPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,20 +16,36 @@ export function OcrReviewPage() {
 
   const { data: session, isLoading, isError } = useOcrSession(id ?? null);
   const confirm = useOcrConfirm(id ?? null);
+  const abandon = useOcrAbandon(id ?? null);
+  const [draftItems, setDraftItems] = useState<OcrExtractedItem[]>([]);
 
-  const extractedIds = session?.extractedExpenses.map((e) => e.id) ?? [];
+  useEffect(() => {
+    setDraftItems(session?.extractedItems ?? []);
+  }, [session?.id, session?.extractedItems]);
+
+  const extractedIds = draftItems.map((item) => item.id);
   const { selected, toggle, selectAll, clearAll } = useOcrSelection(extractedIds);
 
-  const selectedExpenses = session?.extractedExpenses.filter((e) => selected.has(e.id)) ?? [];
-  const selectedTotal = selectedExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const selectedItems = draftItems.filter((item) => selected.has(item.id));
+  const selectedTotal = selectedItems.reduce((sum, item) => sum + item.amount, 0);
+
+  const updateDraftItem = (updated: OcrExtractedItem) => {
+    setDraftItems((items) => items.map((item) => (item.id === updated.id ? updated : item)));
+  };
 
   const handleConfirm = () => {
     confirm.mutate(
-      { selectedIds: [...selected] },
+      { items: selectedItems },
       {
         onSuccess: () => navigate(ROUTES.EXPENSES),
       },
     );
+  };
+
+  const handleAbandon = () => {
+    abandon.mutate(undefined, {
+      onSuccess: () => navigate(ROUTES.EXPENSES),
+    });
   };
 
   if (isError) {
@@ -48,6 +66,15 @@ export function OcrReviewPage() {
     );
   }
 
+  if (session?.status === 'failed') {
+    return (
+      <div className="space-y-6">
+        <SectionHeader title="OCR failed" />
+        <Alert variant="error">{session.errorMessage ?? 'OCR processing failed. Please upload a different document.'}</Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <SectionHeader
@@ -59,12 +86,12 @@ export function OcrReviewPage() {
       {session && (
         <div className="flex flex-wrap items-center gap-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
           <span>File: <strong className="text-slate-800">{session.fileName}</strong></span>
-          <span>{session.extractedExpenses.length} expenses found</span>
+          <span>{draftItems.length} item{draftItems.length !== 1 ? 's' : ''} found</span>
         </div>
       )}
 
       {/* Select/deselect controls */}
-      {session && session.extractedExpenses.length > 0 && (
+      {session && draftItems.length > 0 && (
         <div className="flex items-center gap-3">
           <button onClick={selectAll} className="text-sm font-medium text-indigo-600 hover:underline">
             Select all
@@ -74,7 +101,7 @@ export function OcrReviewPage() {
             Deselect all
           </button>
           <span className="ml-auto text-sm text-slate-500">
-            {selected.size} selected · {formatCurrency(selectedTotal)}
+            {selected.size} selected - {formatCurrency(selectedTotal)}
           </span>
         </div>
       )}
@@ -82,25 +109,26 @@ export function OcrReviewPage() {
       {/* Expense list */}
       <Card>
         <CardHeader>
-          <CardTitle>Extracted expenses</CardTitle>
+          <CardTitle>Extracted items</CardTitle>
         </CardHeader>
 
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
           </div>
-        ) : session?.extractedExpenses.length === 0 ? (
+        ) : draftItems.length === 0 ? (
           <div className="py-10 text-center text-sm text-slate-500">
-            No expenses were extracted from this document.
+            No expenses or debts were extracted from this document.
           </div>
         ) : (
           <div className="space-y-2">
-            {session?.extractedExpenses.map((expense) => (
+            {draftItems.map((item) => (
               <OcrExpenseRow
-                key={expense.id}
-                expense={expense}
-                selected={selected.has(expense.id)}
-                onToggle={() => toggle(expense.id)}
+                key={item.id}
+                item={item}
+                selected={selected.has(item.id)}
+                onToggle={() => toggle(item.id)}
+                onChange={updateDraftItem}
               />
             ))}
           </div>
@@ -111,20 +139,21 @@ export function OcrReviewPage() {
       {session && session.status !== 'failed' && (
         <div className="flex items-center justify-between gap-4">
           <button
-            onClick={() => navigate(ROUTES.EXPENSES)}
-            className="text-sm font-medium text-slate-500 hover:underline"
+            onClick={handleAbandon}
+            disabled={abandon.isPending || confirm.isPending}
+            className="text-sm font-medium text-slate-500 hover:underline disabled:opacity-50"
           >
-            Cancel
+            {abandon.isPending ? 'Abandoning...' : 'Abandon'}
           </button>
 
-          {confirm.isError && (
+          {(confirm.isError || abandon.isError) && (
             <Alert variant="error" className="flex-1">
-              {(confirm.error as Error)?.message ?? 'Import failed. Please try again.'}
+              {(confirm.error as Error)?.message ?? (abandon.error as Error)?.message ?? 'OCR action failed. Please try again.'}
             </Alert>
           )}
 
           <button
-            disabled={selected.size === 0 || confirm.isPending}
+            disabled={selected.size === 0 || confirm.isPending || abandon.isPending}
             onClick={handleConfirm}
             className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
           >

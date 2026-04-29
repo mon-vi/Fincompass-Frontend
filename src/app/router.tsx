@@ -25,6 +25,7 @@ import { BillingPage } from '@/pages/billing/BillingPage';
 import { ExpensesPage } from '@/pages/expenses/ExpensesPage';
 import { OcrUploadPage } from '@/pages/ocr/OcrUploadPage';
 import { OcrReviewPage } from '@/pages/ocr/OcrReviewPage';
+import { EmailParserPage } from '@/pages/email-parser/EmailParserPage';
 import { AriaPage } from '@/pages/aria/AriaPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
@@ -62,8 +63,14 @@ export const router = createBrowserRouter([
               { path: `${ROUTES.DEBTS}/:id/edit`, element: <EditDebtPage /> },
               { path: ROUTES.BUDGET, element: <BudgetPage /> },
               { path: ROUTES.EXPENSES, element: <ExpensesPage /> },
-              { path: ROUTES.OCR_UPLOAD, element: <OcrUploadPage /> },
-              { path: ROUTES.OCR_REVIEW, element: <OcrReviewPage /> },
+              {
+                element: <RequireTier required="navigator" feature="OCR import" />,
+                children: [
+                  { path: ROUTES.OCR_UPLOAD, element: <OcrUploadPage /> },
+                  { path: ROUTES.OCR_REVIEW, element: <OcrReviewPage /> },
+                  { path: ROUTES.EMAIL_PARSER, element: <EmailParserPage /> },
+                ],
+              },
               { path: ROUTES.HEALTH_SCORE, element: <HealthScorePage /> },
               { path: ROUTES.TIMELINE, element: <TimelinePage /> },
               { path: ROUTES.ACTION_PLAN, element: <ActionPlanPage /> },
@@ -73,7 +80,7 @@ export const router = createBrowserRouter([
               { path: ROUTES.BILLING, element: <BillingPage /> },
               // CFO-tier gated
               {
-                element: <RequireTier required="cfo" />,
+                element: <RequireTier required="cfo" feature="ARIA" />,
                 children: [
                   { path: ROUTES.ARIA, element: <AriaPage /> },
                 ],

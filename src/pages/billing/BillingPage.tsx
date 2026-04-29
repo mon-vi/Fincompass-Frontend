@@ -2,7 +2,10 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { useAuthStore } from '@/stores/authStore';
+import { Alert } from '@/components/ui/Alert';
+import { Skeleton } from '@/components/ui/Loader';
+import { useBillingCheckout, useBillingPortal, useBillingSubscription } from '@/features/billing/hooks';
+import type { UserTier } from '@/types/auth';
 
 const plans = [
   {
@@ -33,7 +36,23 @@ const plans = [
 ];
 
 export function BillingPage() {
-  const user = useAuthStore((s) => s.user);
+  const subscription = useBillingSubscription();
+  const checkout = useBillingCheckout();
+  const portal = useBillingPortal();
+
+  const currentPlan = subscription.data?.plan ?? 'compass';
+
+  const redirectTo = (url: string) => {
+    window.location.assign(url);
+  };
+
+  const handleCheckout = (plan: UserTier) => {
+    checkout.mutate({ plan }, { onSuccess: ({ url }) => redirectTo(url) });
+  };
+
+  const handlePortal = () => {
+    portal.mutate(undefined, { onSuccess: ({ url }) => redirectTo(url) });
+  };
 
   return (
     <div className="space-y-8">
@@ -42,9 +61,25 @@ export function BillingPage() {
         subtitle="Choose the plan that fits your financial journey"
       />
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+      {subscription.isError && (
+        <Alert variant="error">{(subscription.error as Error)?.message ?? 'Failed to load subscription details.'}</Alert>
+      )}
+
+      {(checkout.isError || portal.isError) && (
+        <Alert variant="error">
+          {(checkout.error as Error)?.message ?? (portal.error as Error)?.message ?? 'Billing request failed. Please try again.'}
+        </Alert>
+      )}
+
+      {subscription.isLoading && (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {[1, 2, 3].map((item) => <Skeleton key={item} className="h-72 w-full" />)}
+        </div>
+      )}
+
+      {!subscription.isLoading && <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         {plans.map((plan) => {
-          const isCurrent = user?.tier === plan.id;
+          const isCurrent = currentPlan === plan.id;
           return (
             <Card
               key={plan.id}
@@ -73,26 +108,39 @@ export function BillingPage() {
               <Button
                 fullWidth
                 variant={isCurrent ? 'secondary' : plan.recommended ? 'primary' : 'outline'}
-                disabled={isCurrent}
+                disabled={isCurrent || checkout.isPending || portal.isPending}
+                isLoading={checkout.isPending && checkout.variables?.plan === plan.id}
+                onClick={() => plan.id === 'compass' ? handlePortal() : handleCheckout(plan.id as UserTier)}
               >
-                {isCurrent ? 'Current plan' : plan.id === 'compass' ? 'Downgrade' : 'Upgrade'}
+                {isCurrent ? 'Current plan' : plan.id === 'compass' ? 'Manage downgrade' : 'Upgrade'}
               </Button>
             </Card>
           );
         })}
-      </div>
+      </div>}
 
       <Card>
         <CardHeader>
           <CardTitle>Billing details</CardTitle>
         </CardHeader>
-        <p className="text-sm text-slate-500">
-          Billing portal and payment management coming in Phase 4. Contact{' '}
-          <a href="mailto:support@fincompass.app" className="text-indigo-600 hover:underline">
-            support@fincompass.app
-          </a>{' '}
-          to change your plan.
-        </p>
+        {subscription.data ? (
+          <div className="space-y-4 text-sm text-slate-600">
+            <p>
+              Current plan: <span className="font-semibold capitalize text-slate-900">{subscription.data.plan}</span>
+            </p>
+            <p>
+              Status: <span className="font-semibold capitalize text-slate-900">{subscription.data.status.replaceAll('_', ' ')}</span>
+            </p>
+            {subscription.data.currentPeriodEnd && (
+              <p>Renews on {new Date(subscription.data.currentPeriodEnd).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            )}
+            <Button variant="outline" onClick={handlePortal} isLoading={portal.isPending}>
+              Manage subscription
+            </Button>
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">Subscription details are unavailable.</p>
+        )}
       </Card>
     </div>
   );

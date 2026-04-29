@@ -50,14 +50,27 @@ export const API = {
     MARK_ALL_READ: '/notifications/read-all',
   },
   OCR: {
-    UPLOAD: '/ocr/upload',
-    SESSION: (id: string) => `/ocr/sessions/${id}`,
-    CONFIRM: (id: string) => `/ocr/sessions/${id}/confirm`,
+    UPLOADS: '/ocr/uploads',
+    DETAIL: (id: string) => `/ocr/uploads/${id}`,
+    CONFIRM: (id: string) => `/ocr/uploads/${id}/confirm`,
+    ABANDON: (id: string) => `/ocr/uploads/${id}/abandon`,
+  },
+  EMAIL_PARSER: {
+    FORWARDING_ADDRESS: '/email-parser/forwarding-address',
+    EVENTS: '/email-parser/events',
+    EVENT: (id: string) => `/email-parser/events/${id}`,
+    APPLY: (id: string) => `/email-parser/events/${id}/apply`,
+    DISMISS: (id: string) => `/email-parser/events/${id}/dismiss`,
   },
   ARIA: {
-    MESSAGES: '/aria/messages',
-    HISTORY: '/aria/history',
+    CONVERSATIONS: '/aria/conversations',
+    CONVERSATION_MESSAGES: (id: string) => `/aria/conversations/${id}/messages`,
     USAGE: '/aria/usage',
+  },
+  BILLING: {
+    SUBSCRIPTION: '/billing/subscription',
+    CHECKOUT: '/billing/checkout',
+    PORTAL: '/billing/portal',
   },
   PROFILE: {
     UPDATE: '/profile',

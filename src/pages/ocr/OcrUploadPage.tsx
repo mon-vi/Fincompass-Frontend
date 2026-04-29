@@ -1,23 +1,26 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { UploadDropzone } from '@/features/ocr/components';
 import { useOcrUpload, useOcrSession } from '@/features/ocr/hooks';
 import { ROUTES } from '@/constants/routes';
 
 export function OcrUploadPage() {
   const navigate = useNavigate();
-  const { mutate: upload, isPending, isError, error, sessionId } = useOcrUpload();
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { mutate: upload, isPending, isError, error, sessionId, progress } = useOcrUpload();
 
   // Poll while processing so we can auto-navigate when ready
   const { data: session } = useOcrSession(sessionId);
 
-  if (session?.status === 'ready' || session?.status === 'failed') {
-    if (session.status === 'ready') {
+  useEffect(() => {
+    if (session?.status === 'review_ready' || session?.status === 'ready') {
       navigate(ROUTES.OCR_REVIEW.replace(':id', session.id), { replace: true });
     }
-  }
+  }, [navigate, session]);
 
   const isProcessing = isPending || session?.status === 'processing' || session?.status === 'uploading';
 
@@ -29,7 +32,24 @@ export function OcrUploadPage() {
       />
 
       <Card className="p-6">
-        <UploadDropzone onFile={(file) => upload(file)} isUploading={isProcessing} />
+        <UploadDropzone
+          onFile={(file) => {
+            setValidationError(null);
+            upload(file);
+          }}
+          onError={setValidationError}
+          isUploading={isProcessing}
+        />
+
+        {isPending && (
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center justify-between text-sm text-slate-600">
+              <span>Uploading document</span>
+              <span>{progress}%</span>
+            </div>
+            <ProgressBar value={progress} max={100} />
+          </div>
+        )}
 
         {isProcessing && session?.status !== 'uploading' && (
           <div className="mt-4 flex items-center gap-2 text-sm text-indigo-700">
@@ -43,7 +63,13 @@ export function OcrUploadPage() {
 
         {session?.status === 'failed' && (
           <Alert variant="error" className="mt-4">
-            OCR processing failed. Please try a different file or check the format.
+            {session.errorMessage ?? 'OCR processing failed. Please try a different file or check the format.'}
+          </Alert>
+        )}
+
+        {validationError && (
+          <Alert variant="error" className="mt-4">
+            {validationError}
           </Alert>
         )}
 

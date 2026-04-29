@@ -1,9 +1,7 @@
 import type { OnboardingApiAdapter } from './onboardingApi';
-import { onboardingMock } from './onboardingMock';
 import { onboardingReal } from './onboardingReal';
-import { ENV } from '@/constants/env';
 
-export const onboardingAdapter: OnboardingApiAdapter = ENV.USE_MOCK_API ? onboardingMock : onboardingReal;
+export const onboardingAdapter: OnboardingApiAdapter = onboardingReal;
 
 export type {
   OnboardingApiAdapter,

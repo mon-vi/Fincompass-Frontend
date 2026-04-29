@@ -24,11 +24,18 @@ export function useOcrSession(sessionId: string | null) {
 
 export function useOcrUpload() {
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const upload = useMutation({
-    mutationFn: (file: File) => ocrAdapter.upload(file),
-    onSuccess: (result) => setSessionId(result.sessionId),
+    mutationFn: (file: File) => {
+      setProgress(0);
+      return ocrAdapter.upload(file, setProgress);
+    },
+    onSuccess: (result) => {
+      setProgress(100);
+      setSessionId(result.sessionId);
+    },
   });
-  return { ...upload, sessionId };
+  return { ...upload, sessionId, progress };
 }
 
 export function useOcrConfirm(sessionId: string | null) {
@@ -38,6 +45,18 @@ export function useOcrConfirm(sessionId: string | null) {
     onSuccess: () => {
       // Invalidate expenses so the imported items appear
       void qc.invalidateQueries({ queryKey: expenseKeys.all });
+      if (sessionId) {
+        void qc.invalidateQueries({ queryKey: ocrKeys.session(sessionId) });
+      }
+    },
+  });
+}
+
+export function useOcrAbandon(sessionId: string | null) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => ocrAdapter.abandonSession(sessionId!),
+    onSuccess: () => {
       if (sessionId) {
         void qc.invalidateQueries({ queryKey: ocrKeys.session(sessionId) });
       }

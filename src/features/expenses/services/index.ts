@@ -1,9 +1,7 @@
-import { ENV } from '@/constants/env';
-import { expensesMock } from './expensesMock';
 import { expensesReal } from './expensesReal';
 import type { ExpensesApiAdapter } from './expensesApi';
 
-export const expensesAdapter: ExpensesApiAdapter = ENV.USE_MOCK_API ? expensesMock : expensesReal;
+export const expensesAdapter: ExpensesApiAdapter = expensesReal;
 
 export type {
   ExpensesApiAdapter,

@@ -3,12 +3,12 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Alert } from '@/components/ui/Alert';
 import { Skeleton } from '@/components/ui/Loader';
 import { ChatBubble, UsageMeter } from '@/features/aria/components';
-import { useAriaHistory, useAriaUsage, useAriaInput } from '@/features/aria/hooks';
+import { useAriaActiveConversation, useAriaUsage, useAriaInput } from '@/features/aria/hooks';
 
 export function AriaPage() {
-  const { data: messages, isLoading: historyLoading } = useAriaHistory();
-  const { data: usage } = useAriaUsage();
-  const { input, setInput, submit, isPending, isError } = useAriaInput();
+  const { messages, isLoading: historyLoading, isError: historyError, error: historyErrorValue } = useAriaActiveConversation();
+  const { data: usage, isError: usageError } = useAriaUsage();
+  const { input, setInput, submit, isPending, isError, error } = useAriaInput();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +37,12 @@ export function AriaPage() {
         {usage && <UsageMeter usage={usage} className="w-56 shrink-0" />}
       </div>
 
+      {(historyError || usageError) && (
+        <Alert variant="error">
+          {(historyErrorValue as Error)?.message ?? 'ARIA is unavailable right now. Please try again.'}
+        </Alert>
+      )}
+
       {/* Message thread */}
       <div
         ref={scrollRef}
@@ -46,7 +52,7 @@ export function AriaPage() {
           <div className="space-y-4">
             {[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-3/4" />)}
           </div>
-        ) : messages && messages.length > 0 ? (
+        ) : messages.length > 0 ? (
           <div className="space-y-4">
             {messages.map((msg) => (
               <ChatBubble key={msg.id} message={msg} />
@@ -78,7 +84,7 @@ export function AriaPage() {
       {/* Input */}
       <div className="space-y-2">
         {isError && (
-          <Alert variant="error">Failed to send message. Please try again.</Alert>
+          <Alert variant="error">{(error as Error)?.message ?? 'Failed to send message. Please try again.'}</Alert>
         )}
 
         {atLimit && (

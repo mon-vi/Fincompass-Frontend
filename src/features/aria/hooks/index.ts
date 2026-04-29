@@ -1,1 +1,1 @@
-export { useAriaHistory, useAriaUsage, useAriaSend, useAriaInput, ariaKeys } from './useAria';
+export { useAriaConversations, useAriaActiveConversation, useAriaUsage, useAriaSend, useAriaInput, ariaKeys } from './useAria';

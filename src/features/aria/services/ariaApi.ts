@@ -5,6 +5,15 @@ export interface AriaChatMessage {
   role: AriaMessageRole;
   content: string;
   createdAt: string;
+  status?: 'sending' | 'sent' | 'failed';
+}
+
+export interface AriaConversation {
+  id: string;
+  title: string | null;
+  messages: AriaChatMessage[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AriaUsage {
@@ -14,16 +23,19 @@ export interface AriaUsage {
 }
 
 export interface SendMessagePayload {
+  conversationId: string;
   content: string;
 }
 
 export interface SendMessageResult {
-  message: AriaChatMessage;
+  conversation: AriaConversation;
+  messages: AriaChatMessage[];
   usage: AriaUsage;
 }
 
 export interface AriaApiAdapter {
-  getHistory(): Promise<AriaChatMessage[]>;
+  getConversations(): Promise<AriaConversation[]>;
+  createConversation(): Promise<AriaConversation>;
   getUsage(): Promise<AriaUsage>;
   sendMessage(payload: SendMessagePayload): Promise<SendMessageResult>;
 }

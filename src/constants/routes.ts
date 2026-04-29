@@ -25,6 +25,7 @@ export const ROUTES = {
   // OCR
   OCR_UPLOAD: '/expenses/ocr',
   OCR_REVIEW: '/expenses/ocr/review/:id',
+  EMAIL_PARSER: '/email-parser',
 
   // CFO tier
   ARIA: '/aria',

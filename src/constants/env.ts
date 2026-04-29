@@ -7,9 +7,6 @@ export const ENV = {
   API_TIMEOUT: Number(import.meta.env.VITE_API_TIMEOUT ?? 10000),
   APP_NAME: (import.meta.env.VITE_APP_NAME as string) ?? 'FinCompass',
   APP_ENV: (import.meta.env.VITE_APP_ENV as string) ?? 'development',
-  USE_MOCK_API:
-    import.meta.env.VITE_USE_MOCK_API === 'true' ||
-    !import.meta.env.VITE_API_BASE_URL,
 
   FEATURES: {
     OCR: import.meta.env.VITE_FEATURE_OCR === 'true',

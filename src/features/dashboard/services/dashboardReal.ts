@@ -1,17 +1,36 @@
 import { get } from '@/services/apiClient';
 import { handleApiError } from '@/services/apiError';
 import { apiPath, API } from '@/config/endpoints';
+import type { LaravelResource } from '@/services/apiError';
 import type { DashboardApiAdapter, DashboardData } from './dashboardApi';
 
-/**
- * Assumption: GET /api/v1/dashboard returns the DashboardData shape directly
- * (not wrapped in { data: ... }). Confirm with backend.
- * If wrapped, change to: get<LaravelResource<DashboardData>>(...).then(r => r.data)
- */
+type PartialDashboard = Partial<DashboardData> & Record<string, unknown>;
+
+const EMPTY_DASHBOARD: DashboardData = {
+  financialSummary: { monthlyIncome: 0, monthlyExpenses: 0, monthlyDebtPayments: 0, netCashFlow: 0 },
+  budgetSnapshot: { totalBudgeted: 0, totalSpent: 0, overBudgetCategories: [] },
+  healthScore: { score: 0, grade: 'F', trend: 'stable' },
+  actionPlan: { total: 0, completed: 0, nextActionTitle: null },
+  topGuidance: [],
+  dueSoon: [],
+};
+
+function mapDashboard(raw: PartialDashboard): DashboardData {
+  return {
+    financialSummary: raw.financialSummary ?? EMPTY_DASHBOARD.financialSummary,
+    budgetSnapshot: raw.budgetSnapshot ?? EMPTY_DASHBOARD.budgetSnapshot,
+    healthScore: raw.healthScore ?? EMPTY_DASHBOARD.healthScore,
+    actionPlan: raw.actionPlan ?? EMPTY_DASHBOARD.actionPlan,
+    topGuidance: raw.topGuidance ?? [],
+    dueSoon: raw.dueSoon ?? [],
+  };
+}
+
 export const dashboardReal: DashboardApiAdapter = {
   async getDashboard(): Promise<DashboardData> {
     try {
-      return await get<DashboardData>(apiPath(API.DASHBOARD));
+      const res = await get<LaravelResource<PartialDashboard> | PartialDashboard>(apiPath(API.DASHBOARD));
+      return mapDashboard('data' in res ? res.data : res);
     } catch (err) {
       handleApiError(err);
     }

@@ -8,6 +8,7 @@ import { useExpenses, useCreateExpense, useUpdateExpense } from '@/features/expe
 import { ExpenseRow, ExpenseForm } from '@/features/expenses/components';
 import { formatCurrency } from '@/utils/formatters';
 import { ROUTES } from '@/constants/routes';
+import { useTierAccess } from '@/hooks';
 import type { Expense } from '@/features/expenses/services';
 import type { ExpenseFormData } from '@/features/expenses/validation';
 
@@ -15,6 +16,7 @@ export function ExpensesPage() {
   const { data: expenses, isLoading, isError, error } = useExpenses();
   const createExpense = useCreateExpense();
   const updateExpense = useUpdateExpense();
+  const canUseOcr = useTierAccess('navigator');
 
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
@@ -59,12 +61,21 @@ export function ExpensesPage() {
           <p className="text-2xl font-bold text-slate-900">{formatCurrency(totalSpent)}</p>
         </div>
         <div className="flex gap-2">
-          <Link
-            to={ROUTES.EXPENSES + '/ocr'}
-            className="rounded-lg border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100"
-          >
-            Import via OCR
-          </Link>
+          {canUseOcr ? (
+            <Link
+              to={ROUTES.OCR_UPLOAD}
+              className="rounded-lg border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+            >
+              Import via OCR
+            </Link>
+          ) : (
+            <Link
+              to={ROUTES.BILLING}
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            >
+              OCR requires Navigator+
+            </Link>
+          )}
           <button
             onClick={() => { setShowAdd(true); setEditing(null); }}
             className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"

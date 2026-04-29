@@ -1,4 +1,4 @@
-# FinCompass — Web Frontend
+'# FinCompass — Web Frontend
 
 Personal finance guidance platform. React + Vite + TypeScript.
 
