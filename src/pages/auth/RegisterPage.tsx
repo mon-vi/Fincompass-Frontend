@@ -9,6 +9,7 @@ import { PasswordInput } from '@/features/auth/components/PasswordInput';
 import { useRegister } from '@/features/auth/hooks/useRegister';
 import { registerSchema, type RegisterFormValues } from '@/validation/auth';
 import { ROUTES } from '@/constants/routes';
+import { ApiError } from '@/services/apiError';
 
 export function RegisterPage() {
   const registerMutation = useRegister();
@@ -48,9 +49,22 @@ export function RegisterPage() {
 
         {registerMutation.isError && (
           <Alert variant="error">
-            {registerMutation.error instanceof Error
-              ? registerMutation.error.message
-              : 'Something went wrong. Please try again.'}
+            <span>
+              {registerMutation.error instanceof Error
+                ? registerMutation.error.message
+                : 'Something went wrong. Please try again.'}
+            </span>
+            {registerMutation.error instanceof ApiError &&
+              registerMutation.error.fieldErrors &&
+              Object.values(registerMutation.error.fieldErrors).flat().length > 0 && (
+                <ul className="mt-1 list-disc list-inside space-y-0.5 text-xs">
+                  {Object.values(registerMutation.error.fieldErrors)
+                    .flat()
+                    .map((msg, i) => (
+                      <li key={i}>{msg}</li>
+                    ))}
+                </ul>
+              )}
           </Alert>
         )}
 
