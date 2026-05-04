@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { cn } from '@/utils/cn';
 import { ROUTES } from '@/constants/routes';
@@ -11,7 +11,10 @@ interface NavItem {
   to: string;
   label: string;
   icon: ReactElement;
+  mobileIcon?: ReactElement;
 }
+
+/* ─── Icons ───────────────────────────────────────────────────────────── */
 
 function DashIcon() {
   return (
@@ -37,6 +40,22 @@ function BudgetIcon() {
   );
 }
 
+function PlanIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+      <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 9.75zm0 5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 14.75z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function ProfileIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+      <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+    </svg>
+  );
+}
+
 function HeartIcon() {
   return (
     <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
@@ -53,14 +72,6 @@ function CalendarIcon() {
   );
 }
 
-function ListIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-      <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 9.75zm0 5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 14.75z" clipRule="evenodd" />
-    </svg>
-  );
-}
-
 function BellIcon({ count }: { count?: number }) {
   return (
     <span className="relative">
@@ -73,14 +84,6 @@ function BellIcon({ count }: { count?: number }) {
         </span>
       )}
     </span>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-      <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-    </svg>
   );
 }
 
@@ -117,11 +120,12 @@ function LogoMark() {
   );
 }
 
-function SidebarLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
+/* ─── Sidebar nav link ─────────────────────────────────────────────────── */
+
+function SidebarLink({ item }: { item: NavItem }) {
   return (
     <NavLink
       to={item.to}
-      onClick={onClick}
       className={({ isActive }) =>
         cn(
           'flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2',
@@ -137,8 +141,39 @@ function SidebarLink({ item, onClick }: { item: NavItem; onClick?: () => void })
   );
 }
 
+/* ─── Bottom tab link ──────────────────────────────────────────────────── */
+
+function BottomTabLink({ to, label, icon, badge }: { to: string; label: string; icon: ReactElement; badge?: number }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        cn(
+          'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold transition-colors focus-visible:outline-none',
+          isActive ? 'text-[#12355b]' : 'text-slate-500',
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span className={cn('relative flex h-7 w-7 items-center justify-center rounded-xl transition-colors', isActive && 'bg-[#12355b]/10')}>
+            {icon}
+            {badge !== undefined && badge > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white">
+                {badge > 9 ? '9+' : badge}
+              </span>
+            )}
+          </span>
+          <span>{label}</span>
+        </>
+      )}
+    </NavLink>
+  );
+}
+
+/* ─── AppLayout ────────────────────────────────────────────────────────── */
+
 export function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const logout = useLogout();
   const navigate = useNavigate();
@@ -154,13 +189,13 @@ export function AppLayout() {
     ...(hasNavigatorAccess ? [{ to: ROUTES.EMAIL_PARSER, label: 'Email Parser', icon: <ReceiptIcon /> }] : []),
     { to: ROUTES.HEALTH_SCORE, label: 'Health Score', icon: <HeartIcon /> },
     { to: ROUTES.TIMELINE, label: 'Timeline', icon: <CalendarIcon /> },
-    { to: ROUTES.ACTION_PLAN, label: 'Action Plan', icon: <ListIcon /> },
+    { to: ROUTES.ACTION_PLAN, label: 'Action Plan', icon: <PlanIcon /> },
     { to: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: <BellIcon count={unreadCount} /> },
     ...(hasCfoAccess ? [{ to: ROUTES.ARIA, label: 'ARIA', icon: <AriaIcon /> }] : []),
   ];
 
   const accountNav: NavItem[] = [
-    { to: ROUTES.PROFILE, label: 'Profile', icon: <UserIcon /> },
+    { to: ROUTES.PROFILE, label: 'Profile', icon: <ProfileIcon /> },
     { to: ROUTES.BILLING, label: 'Billing', icon: <ReceiptIcon /> },
   ];
 
@@ -175,11 +210,11 @@ export function AppLayout() {
       </div>
       <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 pb-4">
         {mainNav.map((item) => (
-          <SidebarLink key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
+          <SidebarLink key={item.to} item={item} />
         ))}
         <div className="my-4 border-t border-slate-200" />
         {accountNav.map((item) => (
-          <SidebarLink key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
+          <SidebarLink key={item.to} item={item} />
         ))}
       </nav>
       <div className="border-t border-slate-200 p-4">
@@ -200,59 +235,53 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen bg-transparent">
-      {/* Desktop sidebar */}
-      <aside className="hidden border-r border-slate-200/80 bg-white/90 shadow-sm shadow-slate-900/[0.03] backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col">
+      {/* Desktop sidebar – hidden on mobile */}
+      <aside
+        data-testid="desktop-sidebar"
+        className="hidden border-r border-slate-200/80 bg-white/90 shadow-sm shadow-slate-900/[0.03] backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col"
+      >
         {sidebarContent}
       </aside>
-
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm"
-            aria-hidden="true"
-            onClick={() => setSidebarOpen(false)}
-          />
-          <aside className="fixed inset-y-0 left-0 z-50 w-80 max-w-[86vw] border-r border-slate-200 bg-white shadow-2xl shadow-slate-950/20">
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
 
       {/* Main content */}
       <div className="flex flex-1 flex-col lg:pl-64">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
-          <button
-            type="button"
-            aria-label="Open navigation"
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
-          >
-            <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-              <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z" clipRule="evenodd" />
-            </svg>
-          </button>
-          <div className="flex items-center gap-2">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
+          <div className="flex items-center gap-2.5">
             <LogoMark />
             <span className="font-black tracking-tight text-slate-950">FinCompass</span>
           </div>
           <button
             type="button"
             aria-label="Notifications"
-            className="relative ml-auto rounded-xl p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
-            onClick={() => { setSidebarOpen(false); navigate(ROUTES.NOTIFICATIONS); }}
+            className="relative rounded-xl p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
+            onClick={() => { navigate(ROUTES.NOTIFICATIONS); }}
           >
             <BellIcon count={unreadCount} />
           </button>
         </header>
 
-        <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+        {/* Page content – extra bottom padding on mobile for tab bar */}
+        <main className="flex-1 px-4 py-6 pb-safe-bottom sm:px-6 sm:py-8 lg:px-10 lg:pb-8">
           <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>
       </div>
+
+      {/* Mobile bottom tab bar */}
+      <nav
+        data-testid="mobile-bottom-nav"
+        aria-label="Main navigation"
+        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-slate-200/80 bg-white/95 backdrop-blur-xl lg:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <BottomTabLink to={ROUTES.DASHBOARD} label="Dashboard" icon={<DashIcon />} />
+        <BottomTabLink to={ROUTES.DEBTS} label="Debts" icon={<DebtsIcon />} />
+        <BottomTabLink to={ROUTES.BUDGET} label="Budget" icon={<BudgetIcon />} />
+        <BottomTabLink to={ROUTES.ACTION_PLAN} label="Plan" icon={<PlanIcon />} />
+        <BottomTabLink to={ROUTES.PROFILE} label="Profile" icon={<ProfileIcon />} badge={unreadCount} />
+      </nav>
     </div>
   );
 }

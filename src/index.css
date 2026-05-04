@@ -13,6 +13,16 @@
   --fc-color-success: #059669;
   --fc-color-warning: #d97706;
   --fc-color-error: #dc2626;
+
+  /* Safe-area insets for iOS PWA */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Mobile bottom nav height + safe area */
+  --bottom-nav-height: 3.75rem;
+  --content-bottom-pad: calc(var(--bottom-nav-height) + var(--sab));
 }
 
 /* Base resets */
@@ -54,6 +64,24 @@ input,
 select,
 textarea {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Mobile page bottom padding to clear the bottom tab bar */
+.pb-safe-bottom {
+  padding-bottom: var(--content-bottom-pad);
+}
+
+/* On desktop (lg+) restore normal padding */
+@media (min-width: 1024px) {
+  .pb-safe-bottom {
+    padding-bottom: 2rem;
+  }
+}
+
+/* Thumb-friendly minimum tap target */
+.tap-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 @media (prefers-reduced-motion: reduce) {

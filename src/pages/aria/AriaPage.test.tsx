@@ -32,7 +32,7 @@ describe('AriaPage', () => {
     expect(screen.getByText(/monthly message limit/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Message limit reached')).toBeDisabled();
 
-    await userEvent.click(screen.getByRole('button', { name: 'Send' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Send message' }));
     expect(mocks.submit).not.toHaveBeenCalled();
   });
 

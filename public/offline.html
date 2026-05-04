@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline – FinCompass</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #eef5f7 100%);
+        color: #0f172a;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      .card {
+        background: white;
+        border-radius: 2rem;
+        padding: 2.5rem 2rem;
+        max-width: 22rem;
+        width: 100%;
+        box-shadow: 0 4px 32px rgba(18, 53, 91, 0.08);
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.875rem;
+        background: #12355b;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+      }
+      h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.5rem; }
+      p { font-size: 0.875rem; color: #64748b; line-height: 1.6; margin: 0 0 1.5rem; }
+      button {
+        background: #12355b;
+        color: white;
+        border: none;
+        border-radius: 0.875rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">FC</div>
+      <h1>You're offline</h1>
+      <p>FinCompass needs a connection to load your financial data. Check your network and try again.</p>
+      <button onclick="window.location.reload()">Try again</button>
+    </div>
+  </body>
+</html>
