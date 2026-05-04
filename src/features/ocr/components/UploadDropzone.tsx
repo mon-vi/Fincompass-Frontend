@@ -41,8 +41,8 @@ export function UploadDropzone({ onFile, onError, isUploading, accept = ACCEPTED
       }}
       onClick={() => !isUploading && inputRef.current?.click()}
       className={cn(
-        'flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 text-center transition-colors',
-        isDragging ? 'border-indigo-400 bg-indigo-50' : 'border-slate-300 bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50',
+        'flex cursor-pointer flex-col items-center justify-center rounded-[2rem] border-2 border-dashed p-8 text-center transition-all sm:p-10',
+        isDragging ? 'border-[#2b6d91] bg-[#2b6d91]/10' : 'border-slate-300 bg-slate-50 hover:border-[#2b6d91]/50 hover:bg-[#2b6d91]/5',
         isUploading && 'pointer-events-none opacity-60',
       )}
     >
@@ -57,20 +57,20 @@ export function UploadDropzone({ onFile, onError, isUploading, accept = ACCEPTED
         }}
       />
 
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-7 w-7 text-indigo-600">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-[#12355b]/10">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-8 w-8 text-[#12355b]">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
         </svg>
       </div>
 
       {isUploading ? (
-        <p className="text-sm font-medium text-indigo-700">Uploading…</p>
+        <p className="text-sm font-bold text-[#12355b]">Uploading...</p>
       ) : (
         <>
-          <p className="text-sm font-medium text-slate-700">
+          <p className="text-base font-bold text-slate-800">
             Drop a bank statement or receipt here
           </p>
-          <p className="mt-1 text-xs text-slate-400">or click to browse — PDF, PNG, JPG accepted</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500">or click to browse - PDF, PNG, JPG accepted</p>
         </>
       )}
     </div>

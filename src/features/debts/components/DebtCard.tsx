@@ -18,15 +18,18 @@ export function DebtCard({ debt }: DebtCardProps) {
   const paid = (1 - debt.balance / debt.originalBalance) * 100;
 
   return (
-    <Card className="space-y-4">
-      <div className="flex items-start justify-between gap-3">
+    <Card className="space-y-4 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/[0.06]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="truncate font-semibold text-slate-900">{debt.name}</p>
+          <p className="truncate text-lg font-black tracking-tight text-slate-950">{debt.name}</p>
           <Badge variant={debt.isPaid ? 'success' : 'default'} className="mt-1">
             {debt.isPaid ? 'Paid off' : DEBT_TYPE_LABELS[debt.type] ?? debt.type}
           </Badge>
         </div>
-        <p className="shrink-0 text-xl font-bold text-slate-900">{formatCurrency(debt.balance)}</p>
+        <div className="sm:text-right">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Remaining</p>
+          <p className="shrink-0 text-2xl font-black tracking-tight text-slate-950">{formatCurrency(debt.balance)}</p>
+        </div>
       </div>
 
       {!debt.isPaid && (
@@ -37,15 +40,15 @@ export function DebtCard({ debt }: DebtCardProps) {
             showPercent={false}
             variant={paid >= 80 ? 'success' : paid >= 50 ? 'default' : 'warning'}
           />
-          <div className="flex flex-wrap gap-4 text-xs text-slate-500">
-            <span>APR: <strong className="text-slate-700">{debt.interestRate}%</strong></span>
-            <span>Min payment: <strong className="text-slate-700">{formatCurrency(debt.minimumPayment)}/mo</strong></span>
-            <span>Due: <strong className="text-slate-700">Day {debt.dueDayOfMonth}</strong></span>
+          <div className="grid gap-2 text-xs text-slate-500 sm:grid-cols-3">
+            <span className="rounded-xl bg-slate-50 px-3 py-2">APR: <strong className="text-slate-800">{debt.interestRate}%</strong></span>
+            <span className="rounded-xl bg-slate-50 px-3 py-2">Min: <strong className="text-slate-800">{formatCurrency(debt.minimumPayment)}/mo</strong></span>
+            <span className="rounded-xl bg-slate-50 px-3 py-2">Due: <strong className="text-slate-800">Day {debt.dueDayOfMonth}</strong></span>
           </div>
         </>
       )}
 
-      <div className="flex items-center gap-2 border-t border-slate-100 pt-3">
+      <div className="flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:items-center">
         {!debt.isPaid && (
           <Button
             variant="ghost"
@@ -58,7 +61,7 @@ export function DebtCard({ debt }: DebtCardProps) {
         )}
         <Link
           to={`${ROUTES.DEBTS}/${debt.id}/edit`}
-          className="ml-auto text-xs text-indigo-600 hover:underline"
+          className="inline-flex min-h-9 items-center justify-center rounded-xl px-3 text-xs font-bold text-[#2b6d91] hover:bg-slate-50 sm:ml-auto"
         >
           Edit
         </Link>

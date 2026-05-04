@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
@@ -28,6 +28,7 @@ import { OcrUploadPage } from '@/pages/ocr/OcrUploadPage';
 import { OcrReviewPage } from '@/pages/ocr/OcrReviewPage';
 import { EmailParserPage } from '@/pages/email-parser/EmailParserPage';
 import { AriaPage } from '@/pages/aria/AriaPage';
+import { LandingPage } from '@/pages/landing/LandingPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -94,6 +95,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: ROUTES.HOME, element: <Navigate to={ROUTES.DASHBOARD} replace />, errorElement: <RouteErrorBoundary /> },
+  { path: ROUTES.HOME, element: <LandingPage />, errorElement: <RouteErrorBoundary /> },
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage />, errorElement: <RouteErrorBoundary /> },
 ]);

@@ -34,7 +34,7 @@ export function DebtForm({ defaultValues, onSubmit, onCancel, isSubmitting, subm
         ))}
       </Select>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label="Current balance ($)"
           type="number"
@@ -57,7 +57,7 @@ export function DebtForm({ defaultValues, onSubmit, onCancel, isSubmitting, subm
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label="Interest rate (% APR)"
           type="number"
@@ -97,12 +97,11 @@ export function DebtForm({ defaultValues, onSubmit, onCancel, isSubmitting, subm
         <Alert variant="error">{submitError.message ?? 'Something went wrong. Please try again.'}</Alert>
       )}
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Cancel</Button>
         <Button type="submit" isLoading={isSubmitting} className="flex-1">{submitLabel}</Button>
       </div>
     </form>
   );
 }
-
 

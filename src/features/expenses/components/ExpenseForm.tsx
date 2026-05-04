@@ -37,7 +37,7 @@ export function ExpenseForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label="Amount ($)"
           type="number"
@@ -70,20 +70,20 @@ export function ExpenseForm({
         ))}
       </Select>
 
-      <label className="flex cursor-pointer items-center gap-3">
+      <label className="flex min-h-12 cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
         <input
           type="checkbox"
-          className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+          className="h-5 w-5 rounded border-slate-300 text-[#12355b] focus:ring-[#2b6d91]"
           {...register('isRecurring')}
         />
-        <span className="text-sm text-slate-700">Recurring monthly expense</span>
+        <span className="text-sm font-medium text-slate-700">Recurring monthly expense</span>
       </label>
 
       {submitError && (
         <Alert variant="error">{submitError.message ?? 'Something went wrong. Please try again.'}</Alert>
       )}
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">Cancel</Button>
         <Button type="submit" isLoading={isSubmitting} className="flex-1">{submitLabel}</Button>
       </div>

@@ -109,6 +109,14 @@ function AriaIcon() {
   );
 }
 
+function LogoMark() {
+  return (
+    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#12355b] text-sm font-black text-white shadow-sm shadow-slate-900/20">
+      FC
+    </span>
+  );
+}
+
 function SidebarLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
   return (
     <NavLink
@@ -116,10 +124,10 @@ function SidebarLink({ item, onClick }: { item: NavItem; onClick?: () => void })
       onClick={onClick}
       className={({ isActive }) =>
         cn(
-          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+          'flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2',
           isActive
-            ? 'bg-indigo-50 text-indigo-700'
-            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+            ? 'bg-[#12355b] text-white shadow-sm shadow-slate-900/10'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950',
         )
       }
     >
@@ -158,27 +166,31 @@ export function AppLayout() {
 
   const sidebarContent = (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 px-4 py-5">
-        <span className="text-lg font-bold text-indigo-600">FinCompass</span>
+      <div className="flex items-center gap-3 px-4 py-5">
+        <LogoMark />
+        <div className="min-w-0">
+          <span className="block text-lg font-black tracking-tight text-slate-950">FinCompass</span>
+          <span className="block text-xs font-medium text-slate-500">Money clarity, calmly.</span>
+        </div>
       </div>
-      <nav className="flex-1 space-y-1 px-3 pb-4">
+      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 pb-4">
         {mainNav.map((item) => (
           <SidebarLink key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
         ))}
-        <div className="my-3 border-t border-slate-200" />
+        <div className="my-4 border-t border-slate-200" />
         {accountNav.map((item) => (
           <SidebarLink key={item.to} item={item} onClick={() => setSidebarOpen(false)} />
         ))}
       </nav>
       <div className="border-t border-slate-200 p-4">
-        <div className="mb-2 px-1">
-          <p className="text-xs font-medium text-slate-900">{user?.firstName} {user?.lastName}</p>
-          <p className="text-xs text-slate-500 capitalize">{user?.tier} plan</p>
+        <div className="mb-3 rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200/70">
+          <p className="truncate text-sm font-semibold text-slate-950">{user?.firstName} {user?.lastName}</p>
+          <p className="mt-0.5 text-xs font-medium capitalize text-slate-500">{user?.tier} plan</p>
         </div>
         <button
           type="button"
           onClick={() => void logout()}
-          className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          className="min-h-10 w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2"
         >
           Sign out
         </button>
@@ -187,9 +199,9 @@ export function AppLayout() {
   );
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-transparent">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-56 lg:flex-col border-r border-slate-200 bg-white">
+      <aside className="hidden border-r border-slate-200/80 bg-white/90 shadow-sm shadow-slate-900/[0.03] backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col">
         {sidebarContent}
       </aside>
 
@@ -197,43 +209,46 @@ export function AppLayout() {
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
-            className="fixed inset-0 bg-slate-900/50"
+            className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm"
             aria-hidden="true"
             onClick={() => setSidebarOpen(false)}
           />
-          <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-slate-200 bg-white">
+          <aside className="fixed inset-y-0 left-0 z-50 w-80 max-w-[86vw] border-r border-slate-200 bg-white shadow-2xl shadow-slate-950/20">
             {sidebarContent}
           </aside>
         </div>
       )}
 
       {/* Main content */}
-      <div className="flex flex-1 flex-col lg:pl-56">
+      <div className="flex flex-1 flex-col lg:pl-64">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-slate-200 bg-white px-4 lg:hidden">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
           <button
             type="button"
             aria-label="Open navigation"
             onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100"
+            className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
               <path fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z" clipRule="evenodd" />
             </svg>
           </button>
-          <span className="font-bold text-indigo-600">FinCompass</span>
+          <div className="flex items-center gap-2">
+            <LogoMark />
+            <span className="font-black tracking-tight text-slate-950">FinCompass</span>
+          </div>
           <button
             type="button"
             aria-label="Notifications"
-            className="relative ml-auto rounded-lg p-1.5 text-slate-600 hover:bg-slate-100"
+            className="relative ml-auto rounded-xl p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
             onClick={() => { setSidebarOpen(false); navigate(ROUTES.NOTIFICATIONS); }}
           >
             <BellIcon count={unreadCount} />
           </button>
         </header>
 
-        <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
-          <div className="mx-auto max-w-4xl">
+        <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+          <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>

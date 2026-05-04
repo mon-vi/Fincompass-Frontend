@@ -33,13 +33,15 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set `VITE_API_BASE_URL` in `.env.local` to the Laravel backend origin, for example:
+Set `VITE_API_BASE_URL` in `.env.local` to the deployed Laravel backend origin:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=https://fincompass-backend.onrender.com
 ```
 
 The dev server runs at `http://localhost:5173`.
+
+`VITE_API_BASE_URL` should normally be the backend origin only. If someone accidentally includes `/api/v1`, the frontend normalizes it away before endpoint constants add `/api/v1`, so requests do not become `/api/v1/api/v1/...`.
 
 ## Environment Variables
 
@@ -79,6 +81,36 @@ npm run build
 ```
 
 The Vite build is chunked into React, query, forms, vendor, and app bundles to keep production output clean. Generated `dist/` assets and `node_modules/` are ignored by `.gitignore`.
+
+## Local, Vercel, and Render Integration
+
+Both local development and Vercel production should use the same deployed backend:
+
+```bash
+VITE_API_BASE_URL=https://fincompass-backend.onrender.com
+```
+
+Expected final frontend request URLs include:
+
+```text
+https://fincompass-backend.onrender.com/api/v1/auth/login
+https://fincompass-backend.onrender.com/api/v1/auth/register
+https://fincompass-backend.onrender.com/api/v1/dashboard
+```
+
+For Vercel, set `VITE_API_BASE_URL` in the project environment variables for Production, Preview, and Development as needed. Vite bakes this value into the build.
+
+The Render backend should allow both frontend origins:
+
+```bash
+CORS_ALLOWED_ORIGINS=http://localhost:5173,https://fincompass-frontend.vercel.app
+SANCTUM_STATEFUL_DOMAINS=localhost,localhost:5173,127.0.0.1,fincompass-frontend.vercel.app
+FRONTEND_URL=https://fincompass-frontend.vercel.app
+```
+
+Adding `localhost` to CORS/stateful domain configuration does not break production. It only allows browser requests from local development while the production Vercel origin remains allowed.
+
+`vercel.json` rewrites all routes to `/index.html`, so direct visits to `/login`, `/register`, `/dashboard`, and other React Router paths should not return Vercel 404s.
 
 ## Route Map
 
@@ -144,6 +176,7 @@ Current validation baseline:
 - [docs/auth-flow.md](docs/auth-flow.md)
 - [docs/onboarding-flow.md](docs/onboarding-flow.md)
 - [docs/api-integration.md](docs/api-integration.md)
+- [docs/deployment.md](docs/deployment.md)
 - [docs/phase3-screens.md](docs/phase3-screens.md)
 - [docs/phase4-integration.md](docs/phase4-integration.md)
 - [docs/phase5-integration.md](docs/phase5-integration.md)

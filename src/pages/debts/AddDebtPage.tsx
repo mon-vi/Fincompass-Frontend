@@ -16,9 +16,9 @@ export function AddDebtPage() {
   };
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <SectionHeader title="Add debt" subtitle="Enter your debt details below" />
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="mx-auto max-w-2xl space-y-6">
+      <SectionHeader title="Add debt" subtitle="Add the details once. FinCompass will keep the payoff picture visible." />
+      <div className="rounded-[2rem] border border-slate-200 bg-white/95 p-5 shadow-xl shadow-slate-900/[0.05] sm:p-7">
         <DebtForm
           onSubmit={handleSubmit}
           onCancel={() => navigate(ROUTES.DEBTS)}

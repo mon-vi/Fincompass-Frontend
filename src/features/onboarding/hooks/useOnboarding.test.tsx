@@ -64,10 +64,13 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 function Harness() {
-  const { handleStep2Complete, handleStep3Complete, handleStep4Complete, submitError } = useOnboarding();
+  const { handleStep1Complete, handleStep2Complete, handleStep3Complete, handleStep4Complete, submitError } = useOnboarding();
   return (
     <div>
       {submitError && <p>{submitError.message}</p>}
+      <button type="button" onClick={() => handleStep1Complete({ goals: ['pay_off_debt'] })}>
+        Continue goals
+      </button>
       <button type="button" onClick={() => handleStep2Complete({ monthlyIncome: 3000, incomeType: 'salary' })}>
         Continue income
       </button>
@@ -113,6 +116,18 @@ describe('useOnboarding income step', () => {
     });
     expect(mocks.createIncome.mock.invocationCallOrder[0]).toBeLessThan(mocks.advance.mock.invocationCallOrder[0]);
     expect(screen.queryByText('Please add at least one income source before continuing.')).not.toBeInTheDocument();
+  });
+
+  it('advances step 1 goals without calling missing goal endpoints', async () => {
+    useOnboardingStore.getState().setStep(1);
+    render(<Harness />, { wrapper });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Continue goals' }));
+
+    await waitFor(() => expect(mocks.advance).toHaveBeenCalledWith({ step: 1, data: { goals: ['pay_off_debt'] } }));
+    expect(mocks.createIncome).not.toHaveBeenCalled();
+    expect(mocks.createDebt).not.toHaveBeenCalled();
+    expect(mocks.bulkCreateExpenses).not.toHaveBeenCalled();
   });
 
   it('creates a debt before advancing from step 3', async () => {

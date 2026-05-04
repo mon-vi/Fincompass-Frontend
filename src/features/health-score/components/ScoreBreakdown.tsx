@@ -19,13 +19,13 @@ export function ScoreBreakdown({ breakdown }: ScoreBreakdownProps) {
         const variant =
           factor.score >= 80 ? 'success' : factor.score >= 60 ? 'default' : factor.score >= 40 ? 'warning' : 'danger';
         return (
-          <div key={factor.key}>
-            <div className="mb-1.5 flex items-center justify-between">
+          <div key={factor.key} className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/70">
+            <div className="mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <span className="text-sm font-medium text-slate-800">{factor.label}</span>
+                <span className="text-sm font-bold text-slate-950">{factor.label}</span>
                 <span className="ml-2 text-xs text-slate-500">{factor.value}</span>
               </div>
-              <span className="text-sm font-bold text-slate-700">{factor.score}/100</span>
+              <span className="text-sm font-black text-slate-700">{factor.score}/100</span>
             </div>
             <ProgressBar value={factor.score} variant={variant} size="sm" />
           </div>

@@ -27,7 +27,7 @@ describe('authReal', () => {
   });
 
   it('maps login envelope with Sanctum token', async () => {
-    api.post.mockResolvedValue({ data: { user: backendUser, token: 'plain-token' } });
+    api.post.mockResolvedValue({ success: true, message: 'Logged in', data: { user: backendUser, token: 'plain-token' } });
 
     const result = await authReal.login({ email: 'jane@example.com', password: 'password' });
 
@@ -37,8 +37,18 @@ describe('authReal', () => {
     expect(result.user.onboardingStatus).toBe('complete');
   });
 
+  it('uses deployed-backend-compatible auth endpoint paths', async () => {
+    api.post.mockResolvedValue({ success: true, message: 'OK', data: { user: backendUser, token: 'plain-token' } });
+
+    await authReal.login({ email: 'jane@example.com', password: 'password' });
+    await authReal.register({ firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', password: 'password' });
+
+    expect(api.post.mock.calls[0][0]).toBe('/api/v1/auth/login');
+    expect(api.post.mock.calls[1][0]).toBe('/api/v1/auth/register');
+  });
+
   it('sends backend register payload', async () => {
-    api.post.mockResolvedValue({ data: { user: backendUser, token: 'plain-token' } });
+    api.post.mockResolvedValue({ success: true, message: 'OK', data: { user: backendUser, token: 'plain-token' } });
 
     await authReal.register({ firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', password: 'password' });
 

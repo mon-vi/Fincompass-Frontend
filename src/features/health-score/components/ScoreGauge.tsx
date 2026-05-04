@@ -42,7 +42,7 @@ export function ScoreGauge({ score, grade, trend }: ScoreGaugeProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="relative">
+      <div className="relative rounded-full bg-slate-50 p-3 ring-1 ring-slate-200/70">
         <svg width="140" height="140" viewBox="0 0 140 140" aria-label={`Health score: ${score}`}>
           <circle
             cx="70"
@@ -66,8 +66,8 @@ export function ScoreGauge({ score, grade, trend }: ScoreGaugeProps) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={cn('text-4xl font-bold', gradeColors[grade])}>{score}</span>
-          <span className={cn('text-lg font-bold', gradeColors[grade])}>{grade}</span>
+          <span className={cn('text-4xl font-black tracking-tight', gradeColors[grade])}>{score}</span>
+          <span className={cn('text-lg font-black', gradeColors[grade])}>{grade}</span>
         </div>
       </div>
       <span className={cn('text-sm font-medium', trendColors[trend])}>{trendLabels[trend]}</span>

@@ -36,9 +36,9 @@ export function EditDebtPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <SectionHeader title="Edit debt" />
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <SectionHeader title="Edit debt" subtitle="Keep balances and payment details accurate as your plan changes." />
         <Button
           variant="danger"
           size="sm"
@@ -49,7 +49,7 @@ export function EditDebtPage() {
         </Button>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-[2rem] border border-slate-200 bg-white/95 p-5 shadow-xl shadow-slate-900/[0.05] sm:p-7">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-10 w-full" />)}

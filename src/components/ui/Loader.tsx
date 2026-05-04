@@ -14,7 +14,7 @@ const sizeClasses = {
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
     <svg
-      className={cn('animate-spin text-indigo-600', sizeClasses[size], className)}
+      className={cn('animate-spin text-[#2b6d91]', sizeClasses[size], className)}
       fill="none"
       viewBox="0 0 24 24"
       aria-label="Loading"
@@ -37,7 +37,7 @@ interface SkeletonProps {
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={cn('animate-pulse rounded-md bg-slate-200', className)}
+      className={cn('animate-pulse rounded-xl bg-slate-200/80', className)}
       aria-hidden="true"
     />
   );
@@ -45,7 +45,7 @@ export function Skeleton({ className }: SkeletonProps) {
 
 export function PageLoader() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center bg-slate-50">
       <Spinner size="lg" />
     </div>
   );

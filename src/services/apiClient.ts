@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import { ENV } from '@/constants/env';
+import { apiUrl } from '@/config/endpoints';
 import { TOKEN_KEYS, useAuthStore } from '@/stores/authStore';
 
 /**
@@ -20,22 +21,43 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-// ── Request interceptor: attach bearer token ──────────────────────────────────
-
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+export function attachBearerToken(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   const token = localStorage.getItem(TOKEN_KEYS.ACCESS);
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
-});
+}
+
+function requestUrlForLog(config: AxiosRequestConfig): string {
+  if (config.url?.startsWith('http')) return config.url;
+  return apiUrl(config.baseURL ?? ENV.API_BASE_URL, config.url ?? '');
+}
+
+// ── Request interceptor: attach bearer token ──────────────────────────────────
+
+apiClient.interceptors.request.use(attachBearerToken);
 
 // ── Response interceptor: clear invalid Sanctum token ─────────────────────────
 
 apiClient.interceptors.response.use(undefined, async (error: unknown) => {
-  if (axios.isAxiosError(error) && error.response?.status === 401) {
-    useAuthStore.getState().clearAuth();
-    window.location.href = '/login';
+  if (axios.isAxiosError(error)) {
+    if (ENV.IS_DEV) {
+      const method = error.config?.method?.toUpperCase() ?? 'UNKNOWN';
+      const status = error.response?.status ?? 'NETWORK';
+      const requestUrl = requestUrlForLog(error.config ?? {});
+      console.error('[FinCompass API request failed]', {
+        method,
+        status,
+        url: requestUrl,
+        response: error.response?.data,
+      });
+    }
+
+    if (error.response?.status === 401) {
+      useAuthStore.getState().clearAuth();
+      window.location.href = '/login';
+    }
   }
   return Promise.reject(error);
 });

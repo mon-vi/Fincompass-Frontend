@@ -47,10 +47,10 @@ export function EmailParserPage() {
     <div className="space-y-8">
       <SectionHeader
         title="Email Parser"
-        subtitle="Forward statements or receipts and review parsed finance events before applying them."
+        subtitle="Forward receipts or statements, then review parsed finance events before they touch your records."
       />
 
-      <Card>
+      <Card className="bg-gradient-to-br from-white to-slate-50">
         <CardHeader>
           <CardTitle>Forwarding address</CardTitle>
         </CardHeader>
@@ -59,11 +59,11 @@ export function EmailParserPage() {
         ) : forwardingAddress.isError ? (
           <PremiumErrorAlert message={(forwardingAddress.error as Error)?.message ?? 'Failed to load forwarding address.'} />
         ) : forwardingAddress.data ? (
-          <div className="rounded-lg bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 font-mono text-sm font-semibold text-slate-800 shadow-sm shadow-slate-900/[0.03]">
             {forwardingAddress.data.address}
           </div>
         ) : (
-          <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600 ring-1 ring-slate-200/70">
             No forwarding address is set up yet. Create one from the backend or account setup flow before forwarding emails.
           </div>
         )}
@@ -88,22 +88,22 @@ export function EmailParserPage() {
             {events.data.map((event) => {
               const disabled = ['applied', 'dismissed', 'ignored'].includes(event.status);
               return (
-                <div key={event.id} className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex flex-wrap items-start gap-3">
+                <div key={event.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-900/[0.03]">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         {eventBadge(event)}
                         {event.matchedType && <Badge variant="default">{event.matchedType}</Badge>}
                       </div>
-                      <p className="mt-2 truncate text-sm font-semibold text-slate-900">{event.subject ?? 'No subject'}</p>
+                      <p className="mt-2 truncate text-sm font-bold text-slate-950">{event.subject ?? 'No subject'}</p>
                       <p className="text-xs text-slate-500">
                         {event.sender ?? 'Unknown sender'}{event.receivedAt ? ` - ${safeFormatDate(event.receivedAt, { dateStyle: 'short', timeStyle: 'short' })}` : ''}
                       </p>
-                      <p className="mt-3 text-sm text-slate-600">{formatParsedData(event.parsedData)}</p>
+                      <p className="mt-3 rounded-2xl bg-slate-50 px-3 py-2 text-sm leading-6 text-slate-600 ring-1 ring-slate-200/70">{formatParsedData(event.parsedData)}</p>
                       {event.errorMessage && <p className="mt-2 text-xs text-red-600">{event.errorMessage}</p>}
                     </div>
 
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex shrink-0 gap-2 sm:flex-col lg:flex-row">
                       <Button size="sm" onClick={() => handleApply(event)} disabled={disabled || apply.isPending} isLoading={apply.isPending && apply.variables?.id === event.id}>
                         Apply
                       </Button>
@@ -117,8 +117,9 @@ export function EmailParserPage() {
             })}
           </div>
         ) : (
-          <div className="py-10 text-center text-sm text-slate-500">
-            No parsed email events yet. Forward a supported receipt or statement to the address above.
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-500">
+            <p className="font-semibold text-slate-700">No parsed email events yet.</p>
+            <p className="mt-1">Forward a supported receipt or statement to the address above.</p>
           </div>
         )}
       </Card>

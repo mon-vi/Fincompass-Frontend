@@ -51,37 +51,39 @@ export function ExpensesPage() {
     <div className="space-y-8">
       <SectionHeader
         title="Expenses"
-        subtitle="Track and manage your spending"
+        subtitle="Track spending without turning every receipt into homework."
       />
 
-      {/* Summary + actions */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-sm shadow-slate-900/[0.04] sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-slate-500">Total this month</p>
-          <p className="text-2xl font-bold text-slate-900">{formatCurrency(totalSpent)}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2b6d91]">Total this month</p>
+          <p className="mt-1 text-4xl font-black tracking-tight text-slate-950">{formatCurrency(totalSpent)}</p>
+          <p className="mt-1 text-sm text-slate-500">Manual, OCR, and email-imported spending show up together.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           {canUseOcr ? (
             <Link
               to={ROUTES.OCR_UPLOAD}
-              className="rounded-lg border border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#2b6d91]/30 bg-[#2b6d91]/10 px-4 py-2 text-sm font-bold text-[#12355b] hover:bg-[#2b6d91]/15"
             >
               Import via OCR
             </Link>
           ) : (
             <Link
               to={ROUTES.BILLING}
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100"
             >
               OCR requires Navigator+
             </Link>
           )}
           <button
             onClick={() => { setShowAdd(true); setEditing(null); }}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#d97735] px-4 py-2 text-sm font-bold text-white shadow-sm shadow-orange-900/10 hover:bg-[#bf6428]"
           >
-            + Add expense
+            Add expense
           </button>
+        </div>
         </div>
       </div>
 
@@ -113,7 +115,7 @@ export function ExpensesPage() {
         <CardHeader>
           <CardTitle>All expenses</CardTitle>
           {expenses && (
-            <span className="text-sm text-slate-400">{expenses.length} items</span>
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">{expenses.length} items</span>
           )}
         </CardHeader>
 
@@ -132,11 +134,12 @@ export function ExpensesPage() {
             ))}
           </div>
         ) : (
-          <div className="py-12 text-center">
-            <p className="text-sm text-slate-500">No expenses yet.</p>
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-12 text-center">
+            <p className="text-sm font-semibold text-slate-700">No expenses yet.</p>
+            <p className="mt-1 text-sm text-slate-500">Add one manually or import a receipt when you are ready.</p>
             <button
               onClick={() => setShowAdd(true)}
-              className="mt-3 text-sm font-medium text-indigo-600 hover:underline"
+              className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-white px-4 text-sm font-bold text-[#2b6d91] ring-1 ring-slate-200 hover:bg-slate-50"
             >
               Add your first expense
             </button>

@@ -20,23 +20,23 @@ export function OcrExpenseRow({ item, selected, onToggle, onChange }: OcrExpense
 
   return (
     <div className={cn(
-      'flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors',
-      selected ? 'border-indigo-300 bg-indigo-50' : 'border-slate-200 bg-white hover:bg-slate-50',
+      'flex cursor-pointer flex-col gap-3 rounded-2xl border px-4 py-3 transition-all sm:flex-row sm:items-center',
+      selected ? 'border-[#2b6d91]/40 bg-[#2b6d91]/5 shadow-sm' : 'border-slate-200 bg-white hover:bg-slate-50',
     )}>
       <input
         type="checkbox"
         checked={selected}
         onChange={onToggle}
-        className="h-4 w-4 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+        className="h-5 w-5 shrink-0 rounded border-slate-300 text-[#12355b] focus:ring-[#2b6d91]"
       />
 
-      <span className="text-lg">{isExpense ? EXPENSE_CATEGORY_ICONS[item.suggestedCategory] : '$'}</span>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-lg">{isExpense ? EXPENSE_CATEGORY_ICONS[item.suggestedCategory] : '$'}</span>
 
       <div className="min-w-0 flex-1 space-y-2">
         <input
           value={item.description}
           onChange={(e) => update({ description: e.target.value })}
-          className="w-full rounded-md border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-slate-900 focus:border-indigo-300 focus:bg-white focus:outline-none"
+          className="w-full rounded-xl border border-transparent bg-transparent px-2 py-1 text-sm font-bold text-slate-950 focus:border-[#2b6d91]/40 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#2b6d91]/10"
           aria-label="Description"
         />
         <div className="flex flex-wrap items-center gap-2">
@@ -52,7 +52,7 @@ export function OcrExpenseRow({ item, selected, onToggle, onChange }: OcrExpense
         </div>
       </div>
 
-      <div className="w-32 shrink-0">
+      <div className="w-full shrink-0 sm:w-36">
         <label className="sr-only" htmlFor={`ocr-amount-${item.id}`}>Amount</label>
         <input
           id={`ocr-amount-${item.id}`}
@@ -61,7 +61,7 @@ export function OcrExpenseRow({ item, selected, onToggle, onChange }: OcrExpense
           step="0.01"
           value={item.amount}
           onChange={(e) => update({ amount: Number(e.target.value) })}
-          className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-right text-sm font-semibold text-slate-900 focus:border-indigo-300 focus:outline-none"
+          className="min-h-10 w-full rounded-xl border border-slate-200 bg-white px-2 py-1 text-right text-sm font-bold text-slate-950 focus:border-[#2b6d91] focus:outline-none focus:ring-4 focus:ring-[#2b6d91]/10"
         />
         <p className="mt-1 text-right text-xs text-slate-400">{formatCurrency(item.amount)}</p>
       </div>

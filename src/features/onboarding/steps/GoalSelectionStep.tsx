@@ -23,11 +23,12 @@ export function GoalSelectionStep({ onComplete, defaultValues, isSubmitting, sub
   });
 
   return (
-    <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-6">
+    <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-7">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">What are your financial goals?</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Select all that apply — we'll tailor your plan accordingly.
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#2b6d91]">Checkpoint 1</p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">What should FinCompass help you improve first?</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Select every goal that fits. We will use this to shape your first dashboard and action plan.
         </p>
       </div>
 
@@ -35,22 +36,22 @@ export function GoalSelectionStep({ onComplete, defaultValues, isSubmitting, sub
         name="goals"
         control={control}
         render={({ field }) => (
-          <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             {GOAL_OPTIONS.map(({ value, label, description }) => {
               const isSelected = (field.value ?? []).includes(value);
               return (
                 <label
                   key={value}
                   className={cn(
-                    'flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors',
+                    'flex min-h-32 cursor-pointer items-start gap-3 rounded-2xl border p-4 transition-all focus-within:ring-4 focus-within:ring-[#2b6d91]/15',
                     isSelected
-                      ? 'border-indigo-500 bg-indigo-50'
-                      : 'border-slate-200 bg-white hover:bg-slate-50',
+                      ? 'border-[#12355b]/40 bg-[#12355b]/5 shadow-sm'
+                      : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
                   )}
                 >
                   <input
                     type="checkbox"
-                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="mt-0.5 h-5 w-5 shrink-0 rounded border-slate-300 text-[#12355b] focus:ring-[#2b6d91]"
                     checked={isSelected}
                     onChange={(e) => {
                       const current = field.value ?? [];
@@ -64,13 +65,13 @@ export function GoalSelectionStep({ onComplete, defaultValues, isSubmitting, sub
                   <div>
                     <p
                       className={cn(
-                        'text-sm font-medium',
-                        isSelected ? 'text-indigo-900' : 'text-slate-900',
+                        'text-sm font-bold',
+                        isSelected ? 'text-[#12355b]' : 'text-slate-950',
                       )}
                     >
                       {label}
                     </p>
-                    <p className="text-xs text-slate-500">{description}</p>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
                   </div>
                 </label>
               );

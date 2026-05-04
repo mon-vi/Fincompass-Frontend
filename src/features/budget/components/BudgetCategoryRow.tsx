@@ -13,23 +13,23 @@ export function BudgetCategoryRow({ category }: BudgetCategoryRowProps) {
   const variant = isOver ? 'danger' : pct >= 85 ? 'warning' : 'default';
 
   return (
-    <div className="space-y-2 py-3">
-      <div className="flex items-center justify-between gap-2">
+    <div className="space-y-2 rounded-2xl px-2 py-3 transition hover:bg-slate-50">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-lg leading-none">{category.icon}</span>
-          <span className="text-sm font-medium text-slate-800">{category.name}</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-lg leading-none">{category.icon}</span>
+          <span className="text-sm font-bold text-slate-950">{category.name}</span>
           {isOver && (
             <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-600">Over</span>
           )}
         </div>
-        <div className="text-right">
+        <div className="sm:text-right">
           <span className={cn('text-sm font-semibold', isOver ? 'text-red-600' : 'text-slate-900')}>
             {formatCurrency(category.spent)}
           </span>
           <span className="text-xs text-slate-400"> / {formatCurrency(category.budgeted)}</span>
         </div>
       </div>
-      <ProgressBar value={category.spent} max={category.budgeted} size="sm" variant={variant} />
+      <ProgressBar value={category.spent} max={category.budgeted || 1} size="sm" variant={variant} />
     </div>
   );
 }

@@ -21,17 +21,18 @@ export function NotificationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <SectionHeader
           title="Notifications"
-          subtitle={unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
+          subtitle={unreadCount > 0 ? `${unreadCount} unread item${unreadCount === 1 ? '' : 's'} that may need attention.` : 'All caught up. Quiet finances are good finances.'}
         />
         {unreadCount > 0 && (
           <Button
-            variant="ghost"
-            size="sm"
+            variant="outline"
+            size="md"
             isLoading={markAll.isPending}
             onClick={() => markAll.mutate()}
+            className="w-full sm:w-auto"
           >
             Mark all read
           </Button>
@@ -51,7 +52,7 @@ export function NotificationsPage() {
       ) : (
         <EmptyState
           title="No notifications"
-          description="You're all caught up. We'll notify you about payments, budget alerts, and milestones."
+          description="You're all caught up. We'll let you know when payments, budget alerts, milestones, or guidance need your attention."
         />
       )}
     </div>

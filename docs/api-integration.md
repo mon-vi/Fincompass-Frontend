@@ -1,8 +1,18 @@
-# API Integration — Switching from Mock to Laravel
+# API Integration - Laravel Backend
+
+This document is kept for historical context. Current deployment setup lives in [deployment.md](deployment.md).
+
+Current backend base URL for local and deployed frontend builds:
+
+```bash
+VITE_API_BASE_URL=https://fincompass-backend.onrender.com
+```
+
+Endpoint constants add `/api/v1` once, so final requests look like `https://fincompass-backend.onrender.com/api/v1/auth/login`.
 
 ## Current State
 
-All API calls in Phase 2 use mock adapters that simulate network responses locally with artificial delays. No real backend calls are made.
+The app uses real Laravel adapters by default. Runtime mock adapters are no longer used for production feature paths.
 
 The mock adapters are:
 - `src/features/auth/services/authMock.ts`

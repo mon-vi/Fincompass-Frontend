@@ -15,8 +15,8 @@ export function ChatBubble({ message }: ChatBubbleProps) {
       {/* Avatar */}
       <div
         className={cn(
-          'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
-          isUser ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-600',
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl text-xs font-black',
+          isUser ? 'bg-[#12355b] text-white' : 'bg-slate-100 text-[#12355b] ring-1 ring-slate-200',
         )}
       >
         {isUser ? 'You' : 'AI'}
@@ -25,16 +25,16 @@ export function ChatBubble({ message }: ChatBubbleProps) {
       {/* Bubble */}
       <div
         className={cn(
-          'max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
+          'max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm shadow-slate-900/[0.03] sm:max-w-[75%]',
           isUser
-            ? 'rounded-tr-sm bg-indigo-600 text-white'
+            ? 'rounded-tr-sm bg-[#12355b] text-white'
             : 'rounded-tl-sm bg-slate-100 text-slate-800',
           isOptimistic && 'opacity-60',
         )}
       >
         {/* Render simple markdown bold (**text**) */}
         <MessageContent content={message.content} />
-        <p className={cn('mt-1 text-[10px]', isUser ? 'text-indigo-200' : 'text-slate-400')}>
+        <p className={cn('mt-1 text-[10px]', isUser ? 'text-sky-100' : 'text-slate-400')}>
           {safeFormatDate(message.createdAt, { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>

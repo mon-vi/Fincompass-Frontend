@@ -79,15 +79,15 @@ export function OcrReviewPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8">
       <SectionHeader
         title="Review extracted expenses"
-        subtitle="Select which expenses to import. Deselect any you want to skip."
+        subtitle="Review what FinCompass found. Select only the items you trust before importing."
       />
 
       {/* Session info */}
       {session && (
-        <div className="flex flex-wrap items-center gap-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+        <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-600 shadow-sm shadow-slate-900/[0.03]">
           <span>File: <strong className="text-slate-800">{session.fileName}</strong></span>
           <span>{draftItems.length} item{draftItems.length !== 1 ? 's' : ''} found</span>
         </div>
@@ -95,15 +95,15 @@ export function OcrReviewPage() {
 
       {/* Select/deselect controls */}
       {session && draftItems.length > 0 && (
-        <div className="flex items-center gap-3">
-          <button onClick={selectAll} className="text-sm font-medium text-indigo-600 hover:underline">
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/70">
+          <button onClick={selectAll} className="text-sm font-bold text-[#2b6d91] hover:text-[#12355b]">
             Select all
           </button>
           <span className="text-slate-300">|</span>
-          <button onClick={clearAll} className="text-sm font-medium text-slate-500 hover:underline">
+          <button onClick={clearAll} className="text-sm font-bold text-slate-500 hover:text-slate-700">
             Deselect all
           </button>
-          <span className="ml-auto text-sm text-slate-500">
+          <span className="ml-auto text-sm font-semibold text-slate-600">
             {selected.size} selected - {formatCurrency(selectedTotal)}
           </span>
         </div>
@@ -140,11 +140,11 @@ export function OcrReviewPage() {
 
       {/* Footer actions */}
       {session && (
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={handleAbandon}
             disabled={abandon.isPending || confirm.isPending}
-            className="text-sm font-medium text-slate-500 hover:underline disabled:opacity-50"
+            className="min-h-10 rounded-xl px-3 text-sm font-bold text-slate-500 hover:bg-slate-100 disabled:opacity-50"
           >
             {abandon.isPending ? 'Abandoning...' : 'Abandon'}
           </button>
@@ -159,7 +159,7 @@ export function OcrReviewPage() {
           <button
             disabled={selected.size === 0 || confirm.isPending || abandon.isPending}
             onClick={handleConfirm}
-            className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="min-h-11 rounded-xl bg-[#12355b] px-6 py-2 text-sm font-bold text-white hover:bg-[#0b2746] disabled:opacity-50"
           >
             {confirm.isPending ? 'Importing...' : `Import ${selected.size} item${selected.size !== 1 ? 's' : ''}`}
           </button>

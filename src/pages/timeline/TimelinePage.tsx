@@ -32,23 +32,21 @@ export function TimelinePage() {
     <div className="space-y-8">
       <SectionHeader
         title="Debt Timeline"
-        subtitle="See when you'll be debt-free and how much interest you'll pay"
+        subtitle="Compare payoff paths and see how extra payments change your finish line."
       />
 
-      {/* Strategy selector */}
-      <Card>
+      <Card className="bg-gradient-to-br from-white to-slate-50">
         <CardHeader>
           <CardTitle>Payoff strategy</CardTitle>
         </CardHeader>
         <StrategySelector value={strategy} onChange={setStrategy} />
       </Card>
 
-      {/* Extra payment simulator */}
       <Card>
         <CardHeader>
           <CardTitle>Extra payment simulator</CardTitle>
         </CardHeader>
-        <div className="max-w-xs">
+        <div className="max-w-sm">
           <Input
             label="Extra monthly payment ($)"
             type="number"
@@ -62,7 +60,7 @@ export function TimelinePage() {
           />
         </div>
         {extraPayment > 0 && data && (
-          <p className="mt-3 text-sm text-emerald-700">
+          <p className="mt-4 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 ring-1 ring-emerald-100">
             Adding ${extraPayment}/month saves{' '}
             <strong>
               {(() => {
@@ -76,7 +74,6 @@ export function TimelinePage() {
         )}
       </Card>
 
-      {/* Summary stats */}
       {isLoading ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
@@ -85,7 +82,6 @@ export function TimelinePage() {
         <PayoffSummary timeline={data} />
       ) : null}
 
-      {/* Debt payoff order */}
       <Card>
         <CardHeader>
           <CardTitle>Payoff order</CardTitle>

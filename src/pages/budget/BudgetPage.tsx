@@ -27,11 +27,10 @@ export function BudgetPage() {
     <div className="space-y-8">
       <SectionHeader
         title="Budget"
-        subtitle={budget ? safeFormatDate(budget.month, { month: 'long', year: 'numeric' }, 'Monthly budget') : 'Monthly budget'}
+        subtitle={budget ? `${safeFormatDate(budget.month, { month: 'long', year: 'numeric' }, 'Monthly budget')} - see where your money has room and where it needs a guardrail.` : 'Monthly budget'}
       />
 
-      {/* Overall summary */}
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Monthly overview</CardTitle>
           {budget && (
@@ -43,7 +42,21 @@ export function BudgetPage() {
         {isLoading ? (
           <Skeleton className="h-4 w-full" />
         ) : budget ? (
-          <div className="space-y-2">
+          <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/70">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Spent</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-slate-950">{formatCurrency(budget.totalSpent)}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/70">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Budgeted</p>
+                <p className="mt-2 text-2xl font-black tracking-tight text-slate-950">{formatCurrency(budget.totalBudgeted)}</p>
+              </div>
+              <div className={overBudget ? 'rounded-2xl bg-red-50 p-4 ring-1 ring-red-100' : 'rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-100'}>
+                <p className={overBudget ? 'text-xs font-bold uppercase tracking-[0.18em] text-red-700' : 'text-xs font-bold uppercase tracking-[0.18em] text-emerald-700'}>{overBudget ? 'Over by' : 'Room left'}</p>
+                <p className={overBudget ? 'mt-2 text-2xl font-black tracking-tight text-red-900' : 'mt-2 text-2xl font-black tracking-tight text-emerald-900'}>{formatCurrency(Math.abs(budget.totalBudgeted - budget.totalSpent))}</p>
+              </div>
+            </div>
             <ProgressBar
               value={budget.totalSpent}
               max={budget.totalBudgeted}
@@ -52,7 +65,7 @@ export function BudgetPage() {
             />
             {overBudget && (
               <p className="text-xs text-red-600">
-                You're {formatCurrency(budget.totalSpent - budget.totalBudgeted)} over budget this month.
+                You are {formatCurrency(budget.totalSpent - budget.totalBudgeted)} over budget this month. Check the categories below for the pressure point.
               </p>
             )}
           </div>
@@ -66,7 +79,7 @@ export function BudgetPage() {
           {budget && !isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+              className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
             >
               Edit budget
             </button>

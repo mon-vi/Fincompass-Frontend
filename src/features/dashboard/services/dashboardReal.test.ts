@@ -25,6 +25,7 @@ describe('dashboardReal', () => {
 
     const dashboard = await dashboardReal.getDashboard();
 
+    expect(api.get).toHaveBeenCalledWith('/api/v1/dashboard');
     expect(dashboard.financialSummary.monthlyIncome).toBe(5000);
     expect(dashboard.healthScore.grade).toBe('B');
     expect(dashboard.actionPlan.nextActionTitle).toBe('Pay debt');

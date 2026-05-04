@@ -26,11 +26,10 @@ export function HealthScorePage() {
     <div className="space-y-8">
       <SectionHeader
         title="Financial Health Score"
-        subtitle="A snapshot of your overall financial wellness"
+        subtitle="A focused read on your financial wellness, trend, and highest-impact levers."
       />
 
-      {/* Gauge + grade */}
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Your score</CardTitle>
           {data && (
@@ -46,12 +45,12 @@ export function HealthScorePage() {
         ) : data ? (
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-10">
             <ScoreGauge score={data.score} grade={data.grade} trend={data.trend} />
-            <div className="flex-1 space-y-2 text-sm text-slate-600">
+            <div className="flex-1 space-y-3 text-sm leading-6 text-slate-600">
               <p>
                 Your score of <strong className="text-slate-900">{data.score}/100</strong> puts you in the{' '}
                 <strong className="text-slate-900">{data.grade}</strong> range.
               </p>
-              <p>
+              <p className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/70">
                 Your biggest opportunity is improving your <strong>debt-to-income ratio</strong> (currently 31%).
                 Paying down your highest-interest debt first will have the largest impact.
               </p>

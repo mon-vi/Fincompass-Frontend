@@ -29,15 +29,32 @@ export function DebtsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
-        <SectionHeader title="Debts" subtitle="Track and manage your debt payoff" />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <SectionHeader title="Debts" subtitle="Keep payoff progress, due dates, and monthly minimums in one calmer view." />
         <Link to={`${ROUTES.DEBTS}/add`}>
-          <Button size="sm">+ Add debt</Button>
+          <Button className="w-full sm:w-auto" variant="accent">Add debt</Button>
         </Link>
       </div>
 
-      {/* Summary stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="rounded-[2rem] bg-[#12355b] p-6 text-white shadow-xl shadow-slate-900/10">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-100">Payoff snapshot</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100">Total balance</p>
+            <p className="mt-2 text-2xl font-black tracking-tight">{isLoading ? '—' : formatCurrency(totalBalance)}</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100">Minimums/mo</p>
+            <p className="mt-2 text-2xl font-black tracking-tight">{isLoading ? '—' : formatCurrency(totalMinPayments)}</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100">Active debts</p>
+            <p className="mt-2 text-2xl font-black tracking-tight">{isLoading ? '—' : String(activeDebts.length)}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard label="Total balance" value={isLoading ? '—' : formatCurrency(totalBalance)} isLoading={isLoading} />
         <StatCard label="Min. payments/mo" value={isLoading ? '—' : formatCurrency(totalMinPayments)} isLoading={isLoading} />
         <StatCard label="Active debts" value={isLoading ? '—' : String(activeDebts.length)} isLoading={isLoading} />
@@ -57,10 +74,10 @@ export function DebtsPage() {
       ) : activeDebts.length === 0 ? (
         <EmptyState
           title="No active debts"
-          description="You're debt-free, or add your debts to start tracking your payoff."
+          description="If you are debt-free, excellent. If not, add your balances and FinCompass will help you keep the path visible."
           action={
             <Link to={`${ROUTES.DEBTS}/add`}>
-              <Button variant="outline">Add your first debt</Button>
+              <Button variant="accent">Add your first debt</Button>
             </Link>
           }
         />
@@ -75,7 +92,7 @@ export function DebtsPage() {
       {/* Paid off debts */}
       {paidDebts.length > 0 && (
         <div>
-          <h3 className="mb-3 text-sm font-semibold text-slate-500 uppercase tracking-wide">Paid off</h3>
+          <h3 className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">Paid off</h3>
           <div className="space-y-3">
             {paidDebts.map((debt) => (
               <DebtCard key={debt.id} debt={debt} />

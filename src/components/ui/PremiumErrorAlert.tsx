@@ -19,7 +19,7 @@ export function PremiumErrorAlert({ message, className }: PremiumErrorAlertProps
         <p>{message}</p>
         {isTierMessage(message) && (
           <Link to={ROUTES.BILLING}>
-            <Button size="sm" variant="outline">View upgrade options</Button>
+            <Button size="sm" variant="accent">View upgrade options</Button>
           </Link>
         )}
       </div>

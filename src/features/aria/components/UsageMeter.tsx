@@ -15,7 +15,7 @@ export function UsageMeter({ usage, className }: UsageMeterProps) {
   const resets = safeFormatDate(usage.resetsAt, { month: 'short', day: 'numeric' });
 
   return (
-    <div className={cn('rounded-xl border border-slate-200 bg-white p-3', className)}>
+    <div className={cn('rounded-2xl border border-slate-200 bg-white p-3 shadow-sm shadow-slate-900/[0.03]', className)}>
       <div className="mb-2 flex items-center justify-between text-xs text-slate-500">
         <span className="font-medium text-slate-700">ARIA messages</span>
         <span>
@@ -31,7 +31,7 @@ export function UsageMeter({ usage, className }: UsageMeterProps) {
         <div
           className={cn(
             'h-full rounded-full transition-all duration-300',
-            isAtLimit ? 'bg-red-500' : isNearLimit ? 'bg-amber-500' : 'bg-indigo-500',
+            isAtLimit ? 'bg-red-500' : isNearLimit ? 'bg-amber-500' : 'bg-[#2b6d91]',
           )}
           style={{ width: `${pct}%` }}
         />

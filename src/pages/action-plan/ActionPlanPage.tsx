@@ -26,15 +26,15 @@ export function ActionPlanPage() {
     <div className="space-y-8">
       <SectionHeader
         title="Action Plan"
-        subtitle="Personalized steps to improve your financial health"
+        subtitle="Personalized steps that turn your financial picture into forward motion."
       />
 
       {/* Progress bar */}
       {!isLoading && items && items.length > 0 && (
-        <Card>
+        <Card className="bg-gradient-to-br from-white to-slate-50">
           <CardHeader>
             <CardTitle>Progress</CardTitle>
-            <span className="text-sm text-slate-500">{completed.length} of {items.length} complete</span>
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">{completed.length} of {items.length} complete</span>
           </CardHeader>
           <ProgressBar
             value={completed.length}
@@ -53,13 +53,13 @@ export function ActionPlanPage() {
       ) : pending.length === 0 && completed.length === 0 ? (
         <EmptyState
           title="No action items yet"
-          description="Your action plan will be generated based on your financial profile."
+          description="Your action plan will appear once FinCompass has enough profile detail to recommend useful next steps."
         />
       ) : (
         <>
           {pending.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">To do</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">To do</h3>
               {pending.map((item) => (
                 <ActionItemRow key={item.id} item={item} />
               ))}
@@ -68,7 +68,7 @@ export function ActionPlanPage() {
 
           {completed.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Completed</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Completed</h3>
               {completed.map((item) => (
                 <ActionItemRow key={item.id} item={item} />
               ))}

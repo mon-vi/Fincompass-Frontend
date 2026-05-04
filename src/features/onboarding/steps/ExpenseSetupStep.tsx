@@ -37,11 +37,12 @@ export function ExpenseSetupStep({
   });
 
   return (
-    <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-6">
+    <form onSubmit={handleSubmit(onComplete)} noValidate className="space-y-7">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Monthly expenses</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Estimate your major monthly costs. Leave at 0 if not applicable.
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#2b6d91]">Checkpoint 4</p>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Estimate your monthly essentials.</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Round numbers are fine. We just need enough to show your first budget and cash-flow picture.
         </p>
       </div>
 
@@ -51,7 +52,7 @@ export function ExpenseSetupStep({
         </Alert>
       )}
 
-      <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         {EXPENSE_FIELDS.map(({ name, label, placeholder }) => (
           <Input
             key={name}
@@ -67,8 +68,8 @@ export function ExpenseSetupStep({
         ))}
       </div>
 
-      <p className="text-xs text-slate-400">
-        These estimates help us build your initial financial picture. You can adjust them later.
+      <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-medium leading-5 text-emerald-800 ring-1 ring-emerald-200">
+        After this, FinCompass will prepare your dashboard. You can adjust every estimate later.
       </p>
 
       <StepNavigation onBack={onBack} isSubmitting={isSubmitting} isLastStep />

@@ -26,23 +26,23 @@ const strategies: Array<{ value: PayoffStrategy; label: string; description: str
 
 export function StrategySelector({ value, onChange }: StrategySelectorProps) {
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       {strategies.map((s) => (
         <button
           key={s.value}
           type="button"
           onClick={() => onChange(s.value)}
           className={cn(
-            'rounded-xl border p-3 text-left transition-colors',
+            'min-h-32 rounded-2xl border p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2b6d91]/15',
             value === s.value
-              ? 'border-indigo-500 bg-indigo-50'
-              : 'border-slate-200 bg-white hover:bg-slate-50',
+              ? 'border-[#12355b]/40 bg-[#12355b]/5 shadow-sm'
+              : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
           )}
         >
-          <p className={cn('text-sm font-semibold', value === s.value ? 'text-indigo-700' : 'text-slate-900')}>
+          <p className={cn('text-base font-black tracking-tight', value === s.value ? 'text-[#12355b]' : 'text-slate-950')}>
             {s.label}
           </p>
-          <p className="mt-0.5 text-xs text-slate-500">{s.description}</p>
+          <p className="mt-2 text-xs leading-5 text-slate-500">{s.description}</p>
         </button>
       ))}
     </div>
