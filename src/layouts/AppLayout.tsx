@@ -114,7 +114,7 @@ function AriaIcon() {
 
 function LogoMark() {
   return (
-    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#12355b] text-sm font-black text-white shadow-sm shadow-slate-900/20">
+    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#12355b] text-sm font-black text-white shadow-sm shadow-slate-900/20 ring-1 ring-white/20">
       FC
     </span>
   );
@@ -149,14 +149,14 @@ function BottomTabLink({ to, label, icon, badge }: { to: string; label: string; 
       to={to}
       className={({ isActive }) =>
         cn(
-          'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold transition-colors focus-visible:outline-none',
+          'flex flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl py-2 text-[10px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]',
           isActive ? 'text-[#12355b]' : 'text-slate-500',
         )
       }
     >
       {({ isActive }) => (
         <>
-          <span className={cn('relative flex h-7 w-7 items-center justify-center rounded-xl transition-colors', isActive && 'bg-[#12355b]/10')}>
+          <span className={cn('relative flex h-7 w-7 items-center justify-center rounded-xl transition-colors', isActive ? 'bg-[#12355b]/10 shadow-sm shadow-slate-900/[0.04]' : 'bg-transparent')}>
             {icon}
             {badge !== undefined && badge > 0 && (
               <span className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white">
@@ -238,7 +238,7 @@ export function AppLayout() {
       {/* Desktop sidebar – hidden on mobile */}
       <aside
         data-testid="desktop-sidebar"
-        className="hidden border-r border-slate-200/80 bg-white/90 shadow-sm shadow-slate-900/[0.03] backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col"
+        className="hidden border-r border-slate-200/80 bg-white/90 shadow-sm shadow-slate-900/[0.03] backdrop-blur-xl lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col"
       >
         {sidebarContent}
       </aside>
@@ -246,7 +246,7 @@ export function AppLayout() {
       {/* Main content */}
       <div className="flex flex-1 flex-col lg:pl-64">
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur lg:hidden">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 backdrop-blur-xl lg:hidden">
           <div className="flex items-center gap-2.5">
             <LogoMark />
             <span className="font-black tracking-tight text-slate-950">FinCompass</span>
@@ -273,7 +273,7 @@ export function AppLayout() {
       <nav
         data-testid="mobile-bottom-nav"
         aria-label="Main navigation"
-        className="fixed inset-x-0 bottom-0 z-40 flex border-t border-slate-200/80 bg-white/95 backdrop-blur-xl lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex gap-1 border-t border-slate-200/80 bg-white/95 px-2 pt-1.5 shadow-[0_-10px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl lg:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <BottomTabLink to={ROUTES.DASHBOARD} label="Dashboard" icon={<DashIcon />} />

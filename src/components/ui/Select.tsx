@@ -23,7 +23,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'min-h-11 rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-950 shadow-sm shadow-slate-900/[0.02]',
+            'min-h-11 w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-950 shadow-sm shadow-slate-900/[0.02]',
             'transition-all duration-150',
             'focus:border-[#2b6d91] focus:outline-none focus:ring-4 focus:ring-[#2b6d91]/15',
             'disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400',
@@ -31,12 +31,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             className,
           )}
           aria-invalid={!!error}
+          aria-describedby={error ? `${selectId}-error` : hint ? `${selectId}-hint` : undefined}
           {...props}
         >
           {children}
         </select>
-        {error && <p className="text-xs font-medium text-red-600" role="alert">{error}</p>}
-        {!error && hint && <p className="text-xs leading-5 text-slate-500">{hint}</p>}
+        {error && <p id={`${selectId}-error`} className="text-xs font-medium text-red-600" role="alert">{error}</p>}
+        {!error && hint && <p id={`${selectId}-hint`} className="text-xs leading-5 text-slate-500">{hint}</p>}
       </div>
     );
   },

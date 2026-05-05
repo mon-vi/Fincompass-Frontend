@@ -69,7 +69,9 @@ export function BillingPage() {
       </div>
 
       {subscription.isError && (
-        <Alert variant="error">{(subscription.error as Error)?.message ?? 'Failed to load subscription details.'}</Alert>
+        <Alert variant="error" title="Billing details did not load">
+          {(subscription.error as Error)?.message ?? 'We could not load subscription details. Check your connection and try again.'}
+        </Alert>
       )}
 
       {(checkout.isError || portal.isError) && (
@@ -82,7 +84,7 @@ export function BillingPage() {
         </div>
       )}
 
-      {!subscription.isLoading && <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      {!subscription.isLoading && <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
         {plans.map((plan) => {
           const isCurrent = currentPlan === plan.id;
           return (
@@ -147,7 +149,7 @@ export function BillingPage() {
                 <p className="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 sm:col-span-2">Renews on {safeFormatDate(subscription.data.currentPeriodEnd, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
             )}
             </div>
-            <Button variant="outline" onClick={handlePortal} isLoading={portal.isPending}>
+            <Button variant="outline" onClick={handlePortal} isLoading={portal.isPending} className="w-full sm:w-auto">
               Manage subscription
             </Button>
           </div>

@@ -1,9 +1,11 @@
 import { get, post } from '@/services/apiClient';
 import { handleApiError } from '@/services/apiError';
 import { apiPath, API } from '@/config/endpoints';
+import { ENV } from '@/constants/env';
 import type { LaravelResource } from '@/services/apiError';
 import type {
   OnboardingApiAdapter,
+  OnboardingStepNumber,
   OnboardingStatusResponse,
   AdvancePayload,
   AdvanceResponse,
@@ -12,20 +14,49 @@ import type {
 /**
  * Real adapter assumptions:
  * - GET  /api/v1/onboarding → { current_step: 1, completed_steps: [] }
- * - POST /api/v1/onboarding/advance → { next_step: 2|null, onboarding_status: 'pending'|'complete' }
+ * - POST /api/v1/onboarding/advance → profile object with onboarding_step / is_onboarding_complete
  *   Body: { step: 1, data: {...} }
- * Confirm field names with the Laravel team before enabling.
+ *
+ * Response shape handled defensively — backend field names confirmed below.
+ * If backend adds/renames fields, update the LaravelProfile interface and
+ * the resolveIsComplete() helper.
  */
 
 interface LaravelProfile {
-  onboarding_step: number;
-  is_onboarding_complete: boolean;
+  onboarding_step?: number;
+  is_onboarding_complete?: boolean;
+  /** alternate casing some Laravel versions use */
+  onboarding_status?: 'pending' | 'complete';
+  next_step?: number | null;
 }
 
 interface LaravelOnboardingStatus {
-  current_step: number;
+  current_step?: number;
   is_complete?: boolean;
   profile?: LaravelProfile;
+}
+
+type UnknownRecord = Record<string, unknown>;
+
+function asRecord(v: unknown): UnknownRecord {
+  return v && typeof v === 'object' ? (v as UnknownRecord) : {};
+}
+
+function resolveIsComplete(profile: LaravelProfile | UnknownRecord): boolean {
+  if (typeof profile.is_onboarding_complete === 'boolean') return profile.is_onboarding_complete;
+  if (profile.onboarding_status === 'complete') return true;
+  // next_step: null is the backend's "you're done" signal
+  if ('next_step' in profile && profile.next_step === null) return true;
+  // onboarding_step > 4 means all steps are past the last step
+  if (typeof profile.onboarding_step === 'number' && profile.onboarding_step > 4) return true;
+  return false;
+}
+
+function resolveNextStep(profile: LaravelProfile | UnknownRecord, isComplete: boolean): OnboardingStepNumber | null {
+  if (isComplete) return null;
+  if (typeof profile.next_step === 'number') return profile.next_step as OnboardingStepNumber;
+  if (typeof profile.onboarding_step === 'number') return profile.onboarding_step as OnboardingStepNumber;
+  return null;
 }
 
 function completedStepsFrom(currentStep: number, isComplete = false): OnboardingStatusResponse['completedSteps'] {
@@ -50,14 +81,25 @@ export const onboardingReal: OnboardingApiAdapter = {
 
   async advance(payload: AdvancePayload): Promise<AdvanceResponse> {
     try {
-      const res = await post<LaravelResource<LaravelProfile>>(apiPath(API.ONBOARDING.ADVANCE), {
+      const res = await post<LaravelResource<UnknownRecord> | UnknownRecord>(apiPath(API.ONBOARDING.ADVANCE), {
         step: payload.step,
         data: payload.data,
       });
-      const profile = res.data;
-      const isComplete = profile.is_onboarding_complete;
+
+      // Unwrap Laravel resource envelope if present
+      const raw: UnknownRecord = Object.prototype.hasOwnProperty.call(res, 'data')
+        ? asRecord((res as LaravelResource<UnknownRecord>).data)
+        : asRecord(res);
+
+      if (ENV.IS_DEV) {
+        console.log('[Onboarding] /onboarding/advance raw response', raw);
+      }
+
+      const isComplete = resolveIsComplete(raw);
+      const nextStep = resolveNextStep(raw, isComplete);
+
       return {
-        nextStep: isComplete ? null : profile.onboarding_step as AdvanceResponse['nextStep'],
+        nextStep,
         onboardingStatus: isComplete ? 'complete' : 'pending',
       };
     } catch (err) {

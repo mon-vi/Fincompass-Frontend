@@ -14,13 +14,15 @@ export function NotificationsPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Notifications" />
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load notifications'}</Alert>
+        <Alert variant="error" title="Notifications did not load">
+          {(error as Error)?.message ?? 'We could not load notifications. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <SectionHeader
           title="Notifications"

@@ -22,13 +22,15 @@ export function DebtsPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Debts" />
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load debts'}</Alert>
+        <Alert variant="error" title="Debts did not load">
+          {(error as Error)?.message ?? 'We could not load your debt list. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <SectionHeader title="Debts" subtitle="Keep payoff progress, due dates, and monthly minimums in one calmer view." />
         <Link to={`${ROUTES.DEBTS}/add`}>
@@ -54,7 +56,7 @@ export function DebtsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatCard label="Total balance" value={isLoading ? '—' : formatCurrency(totalBalance)} isLoading={isLoading} />
         <StatCard label="Min. payments/mo" value={isLoading ? '—' : formatCurrency(totalMinPayments)} isLoading={isLoading} />
         <StatCard label="Active debts" value={isLoading ? '—' : String(activeDebts.length)} isLoading={isLoading} />
@@ -62,7 +64,7 @@ export function DebtsPage() {
 
       {/* Active debts */}
       {isLoading ? (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-xl border border-slate-200 bg-white p-6">
               <Skeleton className="mb-3 h-5 w-40" />

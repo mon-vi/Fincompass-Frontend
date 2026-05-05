@@ -17,7 +17,9 @@ export function ActionPlanPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Action Plan" />
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load action plan'}</Alert>
+        <Alert variant="error" title="Action plan did not load">
+          {(error as Error)?.message ?? 'We could not load your action plan. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }

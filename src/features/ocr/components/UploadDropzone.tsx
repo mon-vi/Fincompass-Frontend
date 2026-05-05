@@ -40,6 +40,15 @@ export function UploadDropzone({ onFile, onError, isUploading, accept = ACCEPTED
         if (file) handleFile(file);
       }}
       onClick={() => !isUploading && inputRef.current?.click()}
+      onKeyDown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !isUploading) {
+          e.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
+      role="button"
+      tabIndex={isUploading ? -1 : 0}
+      aria-label="Upload a PDF, PNG, JPG, or JPEG document"
       className={cn(
         'flex cursor-pointer flex-col items-center justify-center rounded-[2rem] border-2 border-dashed p-8 text-center transition-all sm:p-10',
         isDragging ? 'border-[#2b6d91] bg-[#2b6d91]/10' : 'border-slate-300 bg-slate-50 hover:border-[#2b6d91]/50 hover:bg-[#2b6d91]/5',

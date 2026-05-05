@@ -24,10 +24,10 @@ export function ForgotPasswordPage() {
     forgotMutation.mutate(data.email);
 
   return (
-    <Card padded={false} className="p-6 sm:p-8">
+    <Card padded={false} className="p-5 sm:p-8">
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Reset your password</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-950">Reset your password</h1>
           <p className="mt-1 text-sm text-slate-500">
             Enter your email and we'll send a reset link if an account exists.
           </p>
@@ -37,7 +37,7 @@ export function ForgotPasswordPage() {
           <Alert variant="error">
             {forgotMutation.error instanceof Error
               ? forgotMutation.error.message
-              : 'Something went wrong. Please try again.'}
+              : 'We could not send a reset link. Check your connection and try again.'}
           </Alert>
         )}
 
@@ -70,7 +70,7 @@ export function ForgotPasswordPage() {
         <div className="text-center">
           <Link
             to={ROUTES.LOGIN}
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+            className="text-sm font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
           >
             ← Back to sign in
           </Link>

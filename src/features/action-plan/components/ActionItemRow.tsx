@@ -47,7 +47,7 @@ export function ActionItemRow({ item }: ActionItemRowProps) {
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <p className={cn('text-sm font-bold', item.isCompleted ? 'text-emerald-700 line-through' : 'text-slate-950')}>
+          <p className={cn('min-w-0 text-sm font-bold', item.isCompleted ? 'text-emerald-700 line-through' : 'text-slate-950')}>
             {item.title}
           </p>
           <Badge variant={categoryColors[item.category] as 'danger' | 'warning' | 'success' | 'info'}>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton } from '@/components/ui/Loader';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useBudget } from '@/features/budget/hooks';
@@ -16,7 +18,9 @@ export function BudgetPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Budget" />
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load budget'}</Alert>
+        <Alert variant="error" title="Budget did not load">
+          {(error as Error)?.message ?? 'We could not load your monthly budget. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }
@@ -69,7 +73,9 @@ export function BudgetPage() {
               </p>
             )}
           </div>
-        ) : null}
+        ) : (
+          <EmptyState title="No budget yet" description="Once your income and spending are available, your monthly budget will appear here." />
+        )}
       </Card>
 
       {/* Category breakdown */}
@@ -77,12 +83,14 @@ export function BudgetPage() {
         <CardHeader>
           <CardTitle>Categories</CardTitle>
           {budget && !isEditing && (
-            <button
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
               onClick={() => setIsEditing(true)}
-              className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
             >
               Edit budget
-            </button>
+            </Button>
           )}
         </CardHeader>
 
@@ -100,7 +108,9 @@ export function BudgetPage() {
               ))}
             </div>
           )
-        ) : null}
+        ) : (
+          <EmptyState title="No categories yet" description="Budget categories will appear after your first budget is generated." />
+        )}
       </Card>
     </div>
   );

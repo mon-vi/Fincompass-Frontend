@@ -93,7 +93,9 @@ export function DashboardPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Dashboard</h1>
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load dashboard'}</Alert>
+        <Alert variant="error" title="Dashboard needs a refresh">
+          {(error as Error)?.message ?? 'We could not load your dashboard right now. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }
@@ -101,7 +103,7 @@ export function DashboardPage() {
   return (
     <div className="space-y-5 sm:space-y-8">
       {/* Page title */}
-      <div>
+      <div className="rounded-[1.75rem] border border-white/70 bg-white/60 p-4 shadow-sm shadow-slate-900/[0.03] backdrop-blur sm:bg-transparent sm:p-0 sm:shadow-none sm:ring-0">
         <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
           {`Welcome back, ${user?.firstName ?? 'there'}`}
         </h1>
@@ -117,7 +119,7 @@ export function DashboardPage() {
       )}
 
       {/* ── Hero financial state card ──────────────────────────────── */}
-      <section className="overflow-hidden rounded-[1.75rem] bg-[#12355b] text-white shadow-xl shadow-slate-900/10 sm:rounded-[2rem]">
+      <section className="overflow-hidden rounded-[1.75rem] bg-[#12355b] text-white shadow-xl shadow-slate-900/10 ring-1 ring-[#12355b]/10 sm:rounded-[2rem]">
         <div className="p-5 sm:p-8">
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2">
@@ -181,7 +183,7 @@ export function DashboardPage() {
       )}
 
       {/* ── Stat cards – 2 col on mobile, 4 on xl ─────────────────── */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         <StatCard
           label="Monthly income"
           value={isLoading ? '—' : formatCurrency(dashboard.financialSummary.monthlyIncome)}
@@ -265,7 +267,7 @@ export function DashboardPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-slate-600">Total spent</span>
                 <span className="font-semibold text-slate-950">
                   {formatCurrency(dashboard.budgetSnapshot.totalSpent)}{' '}
@@ -345,7 +347,7 @@ export function DashboardPage() {
                   <p className="mt-1 text-sm font-semibold text-slate-950">{dashboard.actionPlan.nextActionTitle}</p>
                 </div>
               ) : (
-                <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">No action plan items yet.</p>
+                <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500 ring-1 ring-slate-200/70">Your next action will appear after FinCompass has enough profile detail.</p>
               )}
             </div>
           )}
@@ -396,7 +398,7 @@ export function DashboardPage() {
           <>
             <p className="text-sm font-bold text-[#12355b]">ARIA – Your AI Financial Assistant</p>
             <p className="mt-1 text-xs text-slate-500">Ask ARIA anything about your finances.</p>
-            <Link to={ROUTES.ARIA} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#12355b] px-4 py-2 text-sm font-bold text-white hover:bg-[#0b2746] sm:w-auto">
+            <Link to={ROUTES.ARIA} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#12355b] px-4 py-2 text-sm font-bold text-white hover:bg-[#0b2746] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2 sm:w-auto">
               Open ARIA
             </Link>
           </>
@@ -404,7 +406,7 @@ export function DashboardPage() {
           <>
             <p className="text-sm font-bold text-slate-700">ARIA is available with the CFO plan</p>
             <p className="mt-1 text-xs text-slate-500">A natural upgrade when you want personalized AI-powered guidance.</p>
-            <Link to={ROUTES.BILLING} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 sm:w-auto">
+            <Link to={ROUTES.BILLING} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2 sm:w-auto">
               See upgrade options
             </Link>
           </>

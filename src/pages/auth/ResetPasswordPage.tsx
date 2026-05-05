@@ -28,7 +28,7 @@ export function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <Card padded={false} className="p-6 sm:p-8">
+      <Card padded={false} className="p-5 sm:p-8">
         <div className="space-y-6">
           <Alert variant="error" title="Invalid reset link">
             This link is missing a reset token. Please request a new password reset.
@@ -36,7 +36,7 @@ export function ResetPasswordPage() {
           <div className="text-center">
             <Link
               to={ROUTES.FORGOT_PASSWORD}
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              className="text-sm font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
             >
               Request a new link
             </Link>
@@ -47,10 +47,10 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <Card padded={false} className="p-6 sm:p-8">
+    <Card padded={false} className="p-5 sm:p-8">
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Set a new password</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-950">Set a new password</h1>
           <p className="mt-1 text-sm text-slate-500">
             Choose a strong password for your FinCompass account.
           </p>
@@ -60,7 +60,7 @@ export function ResetPasswordPage() {
           <Alert variant="error">
             {resetMutation.error instanceof Error
               ? resetMutation.error.message
-              : 'Something went wrong. Please try again.'}
+              : 'We could not reset your password. Check your link and try again.'}
           </Alert>
         )}
 
@@ -93,7 +93,7 @@ export function ResetPasswordPage() {
         <div className="text-center">
           <Link
             to={ROUTES.LOGIN}
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+            className="text-sm font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
           >
             ← Back to sign in
           </Link>

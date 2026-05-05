@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton } from '@/components/ui/Loader';
 import { Input } from '@/components/ui/Input';
 import { useTimeline } from '@/features/timeline/hooks';
@@ -23,7 +24,9 @@ export function TimelinePage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Debt Timeline" />
-        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load timeline'}</Alert>
+        <Alert variant="error" title="Timeline did not load">
+          {(error as Error)?.message ?? 'We could not load your payoff timeline. Check your connection and try again.'}
+        </Alert>
       </div>
     );
   }
@@ -46,7 +49,7 @@ export function TimelinePage() {
         <CardHeader>
           <CardTitle>Extra payment simulator</CardTitle>
         </CardHeader>
-        <div className="max-w-sm">
+        <div className="max-w-sm sm:max-w-md">
           <Input
             label="Extra monthly payment ($)"
             type="number"
@@ -80,7 +83,9 @@ export function TimelinePage() {
         </div>
       ) : data ? (
         <PayoffSummary timeline={data} />
-      ) : null}
+      ) : (
+        <EmptyState title="No timeline yet" description="Add debts to compare payoff strategies and see your finish line." />
+      )}
 
       <Card>
         <CardHeader>
@@ -92,7 +97,9 @@ export function TimelinePage() {
           </div>
         ) : data ? (
           <DebtTimelineList debts={data.debts} />
-        ) : null}
+        ) : (
+          <EmptyState title="No payoff order yet" description="Your debt payoff order will appear after you add debts." />
+        )}
       </Card>
     </div>
   );

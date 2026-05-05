@@ -44,7 +44,7 @@ export function AriaPage() {
 
   return (
     /* Full viewport height minus mobile top bar (3.5rem) and bottom nav (3.75rem + safe area) */
-    <div className="flex flex-col" style={{ height: 'calc(100svh - 3.5rem - var(--content-bottom-pad, 3.75rem))' }}>
+    <div className="flex h-[calc(100svh_-_3.5rem_-_var(--content-bottom-pad,3.75rem))] flex-col lg:h-[calc(100svh_-_4rem)]">
       {/* Header */}
       <div className="shrink-0 space-y-3 pb-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -56,8 +56,8 @@ export function AriaPage() {
         </div>
 
         {(historyError || usageError) && (
-          <Alert variant="error">
-            {(historyErrorValue as Error)?.message ?? 'ARIA is unavailable right now. Please try again.'}
+          <Alert variant="error" title="ARIA is taking a breather">
+            {(historyErrorValue as Error)?.message ?? 'ARIA is unavailable right now. Check your connection and try again.'}
           </Alert>
         )}
       </div>
@@ -65,7 +65,7 @@ export function AriaPage() {
       {/* Message thread – scrollable */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto rounded-[1.5rem] border border-slate-200 bg-white/95 p-4 shadow-sm shadow-slate-900/[0.04]"
+        className="flex-1 overflow-y-auto rounded-[1.5rem] border border-slate-200 bg-white/95 p-3 shadow-sm shadow-slate-900/[0.04] sm:p-4"
       >
         {historyLoading ? (
           <div className="space-y-4">
@@ -105,7 +105,7 @@ export function AriaPage() {
       {/* Fixed input area at bottom */}
       <div className="shrink-0 space-y-2 pt-3">
         {isError && (
-          <PremiumErrorAlert message={(error as Error)?.message ?? 'Failed to send message. Please try again.'} />
+          <PremiumErrorAlert message={(error as Error)?.message ?? 'Message did not send. Check your connection and try again.'} />
         )}
         {atLimit && (
           <Alert variant="warning">
@@ -129,7 +129,7 @@ export function AriaPage() {
             onClick={handleSubmit}
             disabled={!input.trim() || isPending || atLimit}
             aria-label="Send message"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#12355b] text-white transition hover:bg-[#0b2746] disabled:opacity-40"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#12355b] text-white transition hover:bg-[#0b2746] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2 disabled:opacity-40"
           >
             <SendIcon />
           </button>

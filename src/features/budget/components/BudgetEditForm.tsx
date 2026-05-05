@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/utils/formatters';
 import { useUpdateBudget } from '../hooks';
 import type { Budget } from '../services';
@@ -58,20 +59,21 @@ export function BudgetEditForm({ budget, onClose }: BudgetEditFormProps) {
           Total: <span className="font-semibold text-slate-800">{formatCurrency(newTotal)}</span>
         </div>
         <div className="flex flex-col-reverse gap-2 sm:flex-row">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="min-h-10 rounded-xl border border-slate-300 px-4 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50"
+            variant="outline"
+            size="sm"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={update.isPending}
-            className="min-h-10 rounded-xl bg-[#12355b] px-4 py-1.5 text-sm font-bold text-white hover:bg-[#0b2746] disabled:opacity-60"
+            isLoading={update.isPending}
+            size="sm"
           >
             {update.isPending ? 'Saving…' : 'Save'}
-          </button>
+          </Button>
         </div>
       </div>
 

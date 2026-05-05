@@ -35,14 +35,14 @@ export function NotificationItem({ notification }: NotificationItemProps) {
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className={cn('text-sm', notification.isRead ? 'font-medium text-slate-700' : 'font-semibold text-slate-900')}>
+            <p className={cn('text-sm leading-5', notification.isRead ? 'font-medium text-slate-700' : 'font-bold text-slate-900')}>
               {notification.title}
             </p>
             {!notification.isRead && (
               <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#2b6d91]" aria-label="Unread" />
             )}
           </div>
-          <p className="mt-0.5 text-xs text-slate-500">{notification.body}</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500">{notification.body}</p>
           <p className="mt-1 text-xs text-slate-400">{formatDate(notification.createdAt)}</p>
         </div>
       </div>

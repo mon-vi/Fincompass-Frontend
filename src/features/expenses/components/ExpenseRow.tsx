@@ -15,19 +15,21 @@ export function ExpenseRow({ expense, onEdit }: ExpenseRowProps) {
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl px-2 py-3 transition hover:bg-slate-50 sm:flex-row sm:items-center">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-lg">
-        {EXPENSE_CATEGORY_ICONS[expense.category]}
-      </div>
+      <div className="flex items-start gap-3 sm:contents">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-lg">
+          {EXPENSE_CATEGORY_ICONS[expense.category]}
+        </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold text-slate-950">{expense.description}</p>
-        <div className="mt-0.5 flex items-center gap-2">
-          <span className="text-xs text-slate-400">{formatDate(expense.date, { dateStyle: 'medium' })}</span>
-          <Badge variant="default" className="text-xs">{EXPENSE_CATEGORY_LABELS[expense.category]}</Badge>
-          {expense.isRecurring && <Badge variant="info" className="text-xs">Recurring</Badge>}
-          {expense.source !== 'manual' && (
-            <Badge variant="default" className="text-xs capitalize">{expense.source.replace('_', ' ')}</Badge>
-          )}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-bold text-slate-950">{expense.description}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-400">{formatDate(expense.date, { dateStyle: 'medium' })}</span>
+            <Badge variant="default" className="text-xs">{EXPENSE_CATEGORY_LABELS[expense.category]}</Badge>
+            {expense.isRecurring && <Badge variant="info" className="text-xs">Recurring</Badge>}
+            {expense.source !== 'manual' && (
+              <Badge variant="default" className="text-xs capitalize">{expense.source.replace('_', ' ')}</Badge>
+            )}
+          </div>
         </div>
       </div>
 

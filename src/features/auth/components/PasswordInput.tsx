@@ -14,9 +14,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-slate-700">
+          <label htmlFor={inputId} className="text-sm font-semibold text-slate-700">
             {label}
           </label>
         )}
@@ -26,12 +26,12 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             id={inputId}
             type={visible ? 'text' : 'password'}
             className={cn(
-              'w-full rounded-lg border px-3 py-2 pr-10 text-sm text-slate-900',
+              'min-h-11 w-full rounded-xl border bg-white px-3.5 py-2.5 pr-11 text-sm text-slate-950 shadow-sm shadow-slate-900/[0.02]',
               'placeholder:text-slate-400',
-              'transition-colors duration-150',
-              'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
+              'transition-all duration-150',
+              'focus:border-[#2b6d91] focus:outline-none focus:ring-4 focus:ring-[#2b6d91]/15',
               'disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400',
-              error ? 'border-red-400 focus:ring-red-400' : 'border-slate-300',
+              error ? 'border-red-400 focus:border-red-500 focus:ring-red-500/15' : 'border-slate-300/90 hover:border-slate-400',
               className,
             )}
             aria-invalid={!!error}
@@ -43,8 +43,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           <button
             type="button"
             onClick={() => setVisible((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
-            tabIndex={-1}
+            aria-label={visible ? 'Hide password' : 'Show password'}
+            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
           >
             {visible ? (
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -59,12 +59,12 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           </button>
         </div>
         {error && (
-          <p id={`${inputId}-error`} className="text-xs text-red-600" role="alert">
+          <p id={`${inputId}-error`} className="text-xs font-medium text-red-600" role="alert">
             {error}
           </p>
         )}
         {!error && hint && (
-          <p id={`${inputId}-hint`} className="text-xs text-slate-500">
+          <p id={`${inputId}-hint`} className="text-xs leading-5 text-slate-500">
             {hint}
           </p>
         )}
