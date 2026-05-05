@@ -94,7 +94,7 @@ export function DebtForm({ defaultValues, onSubmit, onCancel, isSubmitting, subm
       />
 
       {submitError && (
-        <Alert variant="error">{submitError.message ?? 'Debt did not save. Check your details and try again.'}</Alert>
+        <Alert variant="error">{submitError.message ?? 'Something went wrong. Please try again.'}</Alert>
       )}
 
       <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row">
@@ -104,3 +104,4 @@ export function DebtForm({ defaultValues, onSubmit, onCancel, isSubmitting, subm
     </form>
   );
 }
+

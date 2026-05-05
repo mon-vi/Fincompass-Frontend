@@ -17,7 +17,7 @@ export function RetryButton({ error, onRetry, isRetrying, className }: RetryButt
   if (!error) return null;
   return (
     <div className={cn('space-y-3', className)}>
-      <Alert variant="error" title="That did not load">{error.message ?? 'Check your connection and try again.'}</Alert>
+      <Alert variant="error">{error.message ?? 'Something went wrong. Please try again.'}</Alert>
       <Button variant="outline" size="sm" isLoading={isRetrying} onClick={onRetry}>
         Try again
       </Button>

@@ -32,15 +32,15 @@ export function RegisterPage() {
   };
 
   return (
-    <Card padded={false} className="p-5 sm:p-8">
+    <Card padded={false} className="p-6 sm:p-8">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-950">Create your account</h1>
+          <h1 className="text-xl font-semibold text-slate-900">Create your account</h1>
           <p className="mt-1 text-sm text-slate-500">
             Already have an account?{' '}
             <Link
               to={ROUTES.LOGIN}
-              className="font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
+              className="font-medium text-indigo-600 hover:text-indigo-700"
             >
               Sign in
             </Link>
@@ -52,7 +52,7 @@ export function RegisterPage() {
             <span>
               {registerMutation.error instanceof Error
                 ? registerMutation.error.message
-                : 'Account creation did not finish. Check your details and try again.'}
+                : 'Something went wrong. Please try again.'}
             </span>
             {registerMutation.error instanceof ApiError &&
               registerMutation.error.fieldErrors &&
@@ -69,7 +69,7 @@ export function RegisterPage() {
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
             <Input
               label="First name"
               autoComplete="given-name"

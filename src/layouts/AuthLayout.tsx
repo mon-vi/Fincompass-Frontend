@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
  */
 export function AuthLayout() {
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:py-10">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_center,rgba(18,53,91,0.14),transparent_60%)]" />
       <div className="relative grid w-full max-w-5xl items-center gap-8 lg:grid-cols-[1fr_28rem]">
         <div className="hidden lg:block">
@@ -23,7 +23,7 @@ export function AuthLayout() {
           </div>
         </div>
         <div className="w-full max-w-md justify-self-center lg:max-w-none">
-          <div className="mb-6 text-center lg:hidden">
+          <div className="mb-8 text-center lg:hidden">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#12355b] text-sm font-black text-white shadow-sm shadow-slate-900/20">
               FC
             </span>

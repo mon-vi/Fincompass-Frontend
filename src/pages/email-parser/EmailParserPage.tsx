@@ -4,7 +4,6 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { useApplyEmailParserEvent, useDismissEmailParserEvent, useEmailParserEvents, useEmailParserForwardingAddress } from '@/features/email-parser/hooks';
@@ -58,7 +57,7 @@ export function EmailParserPage() {
         {forwardingAddress.isLoading ? (
           <Skeleton className="h-8 w-72" />
         ) : forwardingAddress.isError ? (
-          <PremiumErrorAlert message={(forwardingAddress.error as Error)?.message ?? 'We could not load your forwarding address. Check your connection and try again.'} />
+          <PremiumErrorAlert message={(forwardingAddress.error as Error)?.message ?? 'Failed to load forwarding address.'} />
         ) : forwardingAddress.data ? (
           <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 font-mono text-sm font-semibold text-slate-800 shadow-sm shadow-slate-900/[0.03]">
             {forwardingAddress.data.address}
@@ -83,7 +82,7 @@ export function EmailParserPage() {
             {[1, 2, 3].map((item) => <Skeleton key={item} className="h-24 w-full" />)}
           </div>
         ) : events.isError ? (
-          <PremiumErrorAlert message={(events.error as Error)?.message ?? 'We could not load parsed email events. Check your connection and try again.'} />
+          <PremiumErrorAlert message={(events.error as Error)?.message ?? 'Failed to load parsed events.'} />
         ) : events.data && events.data.length > 0 ? (
           <div className="space-y-3">
             {events.data.map((event) => {
@@ -118,7 +117,10 @@ export function EmailParserPage() {
             })}
           </div>
         ) : (
-          <EmptyState title="No parsed email events yet" description="Forward a supported receipt or statement to the address above. We will show items here for your review before applying them." />
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-500">
+            <p className="font-semibold text-slate-700">No parsed email events yet.</p>
+            <p className="mt-1">Forward a supported receipt or statement to the address above.</p>
+          </div>
         )}
       </Card>
     </div>

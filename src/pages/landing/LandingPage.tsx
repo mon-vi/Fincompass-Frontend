@@ -75,7 +75,7 @@ function CheckIcon() {
 
 function ProductPreview() {
   return (
-    <div className="relative mx-auto w-full max-w-5xl rounded-[2rem] border border-slate-200/80 bg-white/85 p-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
+    <div className="relative mx-auto w-full max-w-5xl rounded-[2rem] border border-white/80 bg-white/80 p-3 shadow-2xl shadow-slate-900/10 backdrop-blur">
       <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
         <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3">
           <span className="h-3 w-3 rounded-full bg-red-300" />
@@ -129,19 +129,19 @@ function ProductPreview() {
 export function LandingPage() {
   return (
     <div className="min-h-screen overflow-hidden bg-transparent text-slate-950">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link to={ROUTES.HOME} className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-4">
             <span className={`flex h-10 w-10 items-center justify-center rounded-2xl text-sm font-black ${designTokens.classes.logoMark}`}>FC</span>
             <span className="text-lg font-black tracking-tight">FinCompass</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-600 md:flex">
-            <a href="#how" className="rounded-lg px-2 py-1 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]">How it works</a>
-            <a href="#features" className="rounded-lg px-2 py-1 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]">Features</a>
-            <a href="#pricing" className="rounded-lg px-2 py-1 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]">Pricing</a>
+            <a href="#how" className="hover:text-slate-950">How it works</a>
+            <a href="#features" className="hover:text-slate-950">Features</a>
+            <a href="#pricing" className="hover:text-slate-950">Pricing</a>
           </nav>
           <div className="flex items-center gap-2">
-            <Link to={ROUTES.LOGIN} className="hidden rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] sm:inline-flex">
+            <Link to={ROUTES.LOGIN} className="hidden rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 sm:inline-flex">
               Sign in
             </Link>
             <Link to={ROUTES.REGISTER} className={`inline-flex min-h-11 items-center justify-center rounded-xl px-4 py-2 text-sm font-bold shadow-sm shadow-orange-900/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f4b460] focus-visible:ring-offset-2 ${designTokens.classes.accentButton}`}>
@@ -174,7 +174,7 @@ export function LandingPage() {
               </div>
               <div className="mt-8 grid max-w-lg grid-cols-3 gap-3 text-sm">
                 {['No setup drama', 'Mobile friendly', 'Upgrade when ready'].map((item) => (
-                  <div key={item} className="rounded-2xl bg-white/85 p-3 text-center font-semibold text-slate-600 shadow-sm shadow-slate-900/[0.03] ring-1 ring-slate-200/70">
+                  <div key={item} className="rounded-2xl bg-white/80 p-3 text-center font-semibold text-slate-600 ring-1 ring-slate-200/70">
                     {item}
                   </div>
                 ))}

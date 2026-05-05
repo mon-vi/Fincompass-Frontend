@@ -19,8 +19,8 @@ export function ProfilePage() {
   const logout = useLogout();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <SectionHeader title="Profile & Settings" subtitle="Manage your account, plan, and session access." />
+    <div className="mx-auto max-w-lg space-y-6">
+      <SectionHeader title="Profile & Settings" />
 
       {/* Account info */}
       <Card>
@@ -29,15 +29,15 @@ export function ProfilePage() {
           <Badge variant="tier">{tierLabels[user?.tier ?? 'compass']} plan</Badge>
         </CardHeader>
         <div className="space-y-3 text-sm">
-          <div className="flex flex-col gap-1 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-between py-1">
             <span className="text-slate-500">Name</span>
             <span className="font-medium text-slate-900">{user?.firstName} {user?.lastName}</span>
           </div>
-          <div className="flex flex-col gap-1 border-t border-slate-100 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-between py-1 border-t border-slate-100">
             <span className="text-slate-500">Email</span>
-            <span className="break-all font-medium text-slate-900">{user?.email}</span>
+            <span className="font-medium text-slate-900">{user?.email}</span>
           </div>
-          <div className="flex flex-col gap-1 border-t border-slate-100 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center justify-between py-1 border-t border-slate-100">
             <span className="text-slate-500">Member since</span>
             <span className="font-medium text-slate-900">
               {user?.createdAt ? formatDate(user.createdAt, { month: 'long', year: 'numeric' }) : '—'}
@@ -51,14 +51,14 @@ export function ProfilePage() {
         <CardHeader>
           <CardTitle>Subscription</CardTitle>
         </CardHeader>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-slate-900">{tierLabels[user?.tier ?? 'compass']} plan</p>
             <p className="text-xs text-slate-500 mt-0.5">
               {user?.tier === 'cfo' ? 'Full access including ARIA AI assistant' : 'Upgrade to unlock more features'}
             </p>
           </div>
-          <Link to={ROUTES.BILLING} className="w-full sm:w-auto">
+          <Link to={ROUTES.BILLING}>
             <Button variant="outline" size="sm">
               {user?.tier === 'cfo' ? 'Manage' : 'Upgrade'}
             </Button>

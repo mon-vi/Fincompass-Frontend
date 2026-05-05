@@ -3,8 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { PremiumErrorAlert } from '@/components/ui/PremiumErrorAlert';
 import { Skeleton } from '@/components/ui/Loader';
 import { OcrExpenseRow } from '@/features/ocr/components';
@@ -57,7 +55,7 @@ export function OcrReviewPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Review extracted expenses" />
-        <Alert variant="error" title="Review session did not load">This import may have expired. Upload the document again when you are ready.</Alert>
+        <Alert variant="error">Failed to load OCR session. It may have expired.</Alert>
       </div>
     );
   }
@@ -75,7 +73,7 @@ export function OcrReviewPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="OCR failed" />
-        <Alert variant="error" title="Document could not be read">{session.errorMessage ?? 'Upload a clearer or different document and try again.'}</Alert>
+        <Alert variant="error">{session.errorMessage ?? 'OCR processing failed. Please upload a different document.'}</Alert>
       </div>
     );
   }
@@ -98,11 +96,11 @@ export function OcrReviewPage() {
       {/* Select/deselect controls */}
       {session && draftItems.length > 0 && (
         <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/70">
-          <button type="button" onClick={selectAll} className="rounded-lg px-2 py-1 text-sm font-bold text-[#2b6d91] hover:bg-white hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]">
+          <button onClick={selectAll} className="text-sm font-bold text-[#2b6d91] hover:text-[#12355b]">
             Select all
           </button>
           <span className="text-slate-300">|</span>
-          <button type="button" onClick={clearAll} className="rounded-lg px-2 py-1 text-sm font-bold text-slate-500 hover:bg-white hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]">
+          <button onClick={clearAll} className="text-sm font-bold text-slate-500 hover:text-slate-700">
             Deselect all
           </button>
           <span className="ml-auto text-sm font-semibold text-slate-600">
@@ -122,7 +120,9 @@ export function OcrReviewPage() {
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
           </div>
         ) : draftItems.length === 0 ? (
-          <EmptyState title="No items found" description="We did not find expenses or debts in this document. Try a clearer image or another supported file." />
+          <div className="py-10 text-center text-sm text-slate-500">
+            No expenses or debts were extracted from this document.
+          </div>
         ) : (
           <div className="space-y-2">
             {draftItems.map((item) => (
@@ -141,31 +141,28 @@ export function OcrReviewPage() {
       {/* Footer actions */}
       {session && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            type="button"
-            variant="ghost"
+          <button
             onClick={handleAbandon}
             disabled={abandon.isPending || confirm.isPending}
+            className="min-h-10 rounded-xl px-3 text-sm font-bold text-slate-500 hover:bg-slate-100 disabled:opacity-50"
           >
             {abandon.isPending ? 'Abandoning...' : 'Abandon'}
-          </Button>
+          </button>
 
           {(confirm.isError || abandon.isError) && (
             <PremiumErrorAlert
               className="flex-1"
-              message={(confirm.error as Error)?.message ?? (abandon.error as Error)?.message ?? 'That OCR action did not finish. Check your connection and try again.'}
+              message={(confirm.error as Error)?.message ?? (abandon.error as Error)?.message ?? 'OCR action failed. Please try again.'}
             />
           )}
 
-          <Button
-            type="button"
+          <button
             disabled={selected.size === 0 || confirm.isPending || abandon.isPending}
             onClick={handleConfirm}
-            isLoading={confirm.isPending}
-            className="w-full sm:w-auto"
+            className="min-h-11 rounded-xl bg-[#12355b] px-6 py-2 text-sm font-bold text-white hover:bg-[#0b2746] disabled:opacity-50"
           >
             {confirm.isPending ? 'Importing...' : `Import ${selected.size} item${selected.size !== 1 ? 's' : ''}`}
-          </Button>
+          </button>
         </div>
       )}
     </div>

@@ -6,13 +6,10 @@ import { GoalSelectionStep } from '@/features/onboarding/steps/GoalSelectionStep
 import { IncomeSetupStep } from '@/features/onboarding/steps/IncomeSetupStep';
 import { DebtSetupStep } from '@/features/onboarding/steps/DebtSetupStep';
 import { ExpenseSetupStep } from '@/features/onboarding/steps/ExpenseSetupStep';
-import { ReviewStep } from '@/features/onboarding/steps/ReviewStep';
-import { useOnboardingStore, STEP_META, TOTAL_STEPS } from '@/features/onboarding/store/onboardingStore';
-import { Button } from '@/components/ui/Button';
+import { STEP_META } from '@/features/onboarding/store/onboardingStore';
 import { ROUTES } from '@/constants/routes';
 
-// Shared form id — links the external submit button to whichever step form is active.
-const FORM_ID = 'onboarding-step-form';
+const TOTAL_STEPS = 4;
 
 export function OnboardingPage() {
   const user = useAuthStore((s) => s.user);
@@ -24,7 +21,6 @@ export function OnboardingPage() {
     handleStep2Complete,
     handleStep3Complete,
     handleStep4Complete,
-    handleReviewComplete,
     isSubmitting,
     submitError,
     step1,
@@ -37,146 +33,109 @@ export function OnboardingPage() {
     return <Navigate to={ROUTES.DASHBOARD} replace />;
   }
 
-  const isReviewStep = currentStep === 5;
-  const isFirstStep = currentStep === 1;
-  const stepMeta = STEP_META[currentStep];
-
   return (
-    <div className="flex min-h-screen flex-col bg-transparent">
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-lg items-center justify-between">
+    <div className="flex min-h-screen flex-col">
+      {/* ── Top header ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-30 border-b border-white/70 bg-white/90 px-4 py-3 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#12355b] text-xs font-black text-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#12355b] text-xs font-black text-white shadow-sm">
               FC
             </span>
             <span className="font-black tracking-tight text-slate-950">FinCompass</span>
           </div>
-          <span className="text-xs font-semibold text-slate-500">
-            Step {currentStep} of {TOTAL_STEPS}
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200">
+            Welcome, {user?.firstName ?? 'there'}
           </span>
         </div>
       </header>
 
-      {/* ── Progress ────────────────────────────────────────────────────────── */}
-      <div className="border-b border-slate-200/80 bg-white/90 px-4 pb-3 pt-4 backdrop-blur-xl">
-        <div className="mx-auto max-w-xl">
-          <div className="mb-4 h-1 w-full overflow-hidden rounded-full bg-slate-100">
+      {/* ── Step progress bar ───────────────────────────────────────────── */}
+      <div className="bg-white/80 px-4 py-3">
+        <div className="mx-auto max-w-2xl">
+          {/* Step label */}
+          <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-500">
+            <span className="text-[#12355b]">{STEP_META[currentStep].title}</span>
+            <span>Step {currentStep} of {TOTAL_STEPS}</span>
+          </div>
+          {/* Progress track */}
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
             <div
-              className="h-full rounded-full bg-[#12355b] transition-all duration-500"
+              className="h-full rounded-full bg-[#12355b] transition-all duration-300"
               style={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
             />
           </div>
-          <ProgressIndicator currentStep={currentStep} />
+          {/* Step dots */}
+          <div className="mt-3">
+            <ProgressIndicator currentStep={currentStep} />
+          </div>
         </div>
       </div>
 
-      {/* ── Scrollable content ──────────────────────────────────────────────── */}
-      <main className="flex-1">
-        <div className="mx-auto max-w-xl px-4 py-6" style={{ paddingBottom: 'calc(8.5rem + env(safe-area-inset-bottom, 0px))' }}>
-          {/* Step heading */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-black leading-snug tracking-tight text-slate-950">
-              {stepMeta.title}
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-slate-500">{stepMeta.subtitle}</p>
+      {/* ── Main content ────────────────────────────────────────────────── */}
+      <main className="flex-1 px-4 py-6 pb-8">
+        <div className="mx-auto w-full max-w-2xl space-y-4">
+          {/* Context card – brief, not sticky on mobile */}
+          <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm shadow-slate-900/[0.04] backdrop-blur">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-[#12355b] p-2 text-white">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-sm text-slate-600">
+                <span className="font-semibold text-slate-950">No perfect answers needed.</span>{' '}
+                You can refine everything from your dashboard later.
+              </p>
+            </div>
           </div>
 
-          {/* Step content */}
-          {currentStep === 1 && (
-            <GoalSelectionStep
-              formId={FORM_ID}
-              onComplete={handleStep1Complete}
-              defaultValues={step1}
-              isSubmitting={isSubmitting}
-              submitError={submitError}
-            />
-          )}
-          {currentStep === 2 && (
-            <IncomeSetupStep
-              formId={FORM_ID}
-              onComplete={handleStep2Complete}
-              defaultValues={step2}
-              isSubmitting={isSubmitting}
-              submitError={submitError}
-            />
-          )}
-          {currentStep === 3 && (
-            <DebtSetupStep
-              formId={FORM_ID}
-              onComplete={handleStep3Complete}
-              defaultValues={step3}
-              isSubmitting={isSubmitting}
-              submitError={submitError}
-            />
-          )}
-          {currentStep === 4 && (
-            <ExpenseSetupStep
-              formId={FORM_ID}
-              onComplete={handleStep4Complete}
-              defaultValues={step4}
-              isSubmitting={isSubmitting}
-              submitError={submitError}
-            />
-          )}
-          {currentStep === 5 && (
-            <ReviewStep
-              step2={step2}
-              step3={step3}
-              step4={step4}
-              submitError={submitError}
-              onEditStep={(step) => useOnboardingStore.getState().setStep(step)}
-            />
-          )}
+          {/* Step form */}
+          <div className="rounded-[1.5rem] border border-slate-200/80 bg-white/95 p-5 shadow-lg shadow-slate-900/[0.06] sm:p-8">
+            {currentStep === 1 && (
+              <GoalSelectionStep
+                onComplete={handleStep1Complete}
+                defaultValues={step1}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+              />
+            )}
+            {currentStep === 2 && (
+              <IncomeSetupStep
+                onComplete={handleStep2Complete}
+                onBack={goBack}
+                defaultValues={step2}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+              />
+            )}
+            {currentStep === 3 && (
+              <DebtSetupStep
+                onComplete={handleStep3Complete}
+                onBack={goBack}
+                defaultValues={step3}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+              />
+            )}
+            {currentStep === 4 && (
+              <ExpenseSetupStep
+                onComplete={handleStep4Complete}
+                onBack={goBack}
+                defaultValues={step4}
+                isSubmitting={isSubmitting}
+                submitError={submitError}
+              />
+            )}
+          </div>
+
+          {/* Auto-save notice */}
+          <div className="flex items-center justify-center gap-2 text-xs font-medium text-slate-500">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+            Your answers are saved after each Continue.
+          </div>
         </div>
       </main>
-
-      {/* ── Sticky footer ───────────────────────────────────────────────────── */}
-      <footer
-        className="fixed bottom-0 left-0 right-0 z-20 border-t border-slate-200/80 bg-white/95 px-4 py-3 shadow-[0_-10px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl"
-        style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom, 12px))' }}
-      >
-        <div className="mx-auto flex max-w-xl items-center gap-3">
-          {!isFirstStep && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="md"
-              onClick={goBack}
-              disabled={isSubmitting}
-              className="shrink-0"
-            >
-              ← Back
-            </Button>
-          )}
-
-          {isReviewStep ? (
-            <Button
-              type="button"
-              variant="accent"
-              size="lg"
-              fullWidth
-              isLoading={isSubmitting}
-              onClick={handleReviewComplete}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? stepMeta.loadingLabel : 'Finish setup'}
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              form={FORM_ID}
-              variant="primary"
-              size="lg"
-              fullWidth
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? stepMeta.loadingLabel : 'Save and continue'}
-            </Button>
-          )}
-        </div>
-      </footer>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton } from '@/components/ui/Loader';
 import { Badge } from '@/components/ui/Badge';
 import { useHealthScore } from '@/features/health-score/hooks';
@@ -18,9 +17,7 @@ export function HealthScorePage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Financial Health Score" />
-        <Alert variant="error" title="Health score did not load">
-          {(error as Error)?.message ?? 'We could not load your financial health score. Check your connection and try again.'}
-        </Alert>
+        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load health score'}</Alert>
       </div>
     );
   }
@@ -62,9 +59,7 @@ export function HealthScorePage() {
               </p>
             </div>
           </div>
-        ) : (
-          <EmptyState title="No score yet" description="Your score will appear after FinCompass has enough profile detail to evaluate your current financial picture." />
-        )}
+        ) : null}
       </Card>
 
       {/* Score breakdown */}
@@ -78,9 +73,7 @@ export function HealthScorePage() {
           </div>
         ) : data ? (
           <ScoreBreakdown breakdown={data.breakdown} />
-        ) : (
-          <EmptyState title="No breakdown yet" description="Score factors will appear once your health score is generated." />
-        )}
+        ) : null}
       </Card>
 
       {/* History */}
@@ -97,7 +90,7 @@ export function HealthScorePage() {
               return (
                 <div key={point.month} className="flex flex-1 flex-col items-center gap-1">
                   <span className="text-xs font-medium text-slate-600">{point.score}</span>
-                  <div className="w-full rounded-t-sm bg-[#2b6d91]" style={{ height: `${heightPct}%`, minHeight: 4 }} />
+                  <div className="w-full rounded-t-sm bg-indigo-500" style={{ height: `${heightPct}%`, minHeight: 4 }} />
                   <span className="text-xs text-slate-400">
                     {safeFormatDate(point.month, { month: 'short' })}
                   </span>
@@ -105,9 +98,7 @@ export function HealthScorePage() {
               );
             })}
           </div>
-        ) : (
-          <EmptyState title="No history yet" description="Your score trend will build over time as FinCompass updates your plan." />
-        )}
+        ) : null}
       </Card>
     </div>
   );

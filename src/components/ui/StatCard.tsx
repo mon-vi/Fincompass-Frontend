@@ -20,7 +20,7 @@ const trendClasses = {
 
 export function StatCard({ label, value, subtext, icon, trend, isLoading, className }: StatCardProps) {
   return (
-    <div className={cn('rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm shadow-slate-900/[0.04] sm:p-5', className)}>
+    <div className={cn('rounded-2xl border border-slate-200/80 bg-white/95 p-5 shadow-sm shadow-slate-900/[0.04]', className)}>
       <div className="flex items-start justify-between gap-2">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{label}</p>
         {icon && <div className="shrink-0 rounded-xl bg-slate-100 p-2 text-[#2b6d91]">{icon}</div>}
@@ -32,7 +32,7 @@ export function StatCard({ label, value, subtext, icon, trend, isLoading, classN
         </div>
       ) : (
         <div className="mt-2">
-          <p className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">{value}</p>
+          <p className="text-2xl font-bold tracking-tight text-slate-950">{value}</p>
           {subtext && (
             <p className={cn('mt-0.5 text-xs', trend ? trendClasses[trend] : 'text-slate-500')}>
               {subtext}

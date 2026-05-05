@@ -24,15 +24,15 @@ export function LoginPage() {
   const onSubmit = (data: LoginFormValues) => loginMutation.mutate(data);
 
   return (
-    <Card padded={false} className="p-5 sm:p-8">
+    <Card padded={false} className="p-6 sm:p-8">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-950">Sign in to your account</h1>
+          <h1 className="text-xl font-semibold text-slate-900">Sign in to your account</h1>
           <p className="mt-1 text-sm text-slate-500">
             Don't have an account?{' '}
             <Link
               to={ROUTES.REGISTER}
-              className="font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
+              className="font-medium text-indigo-600 hover:text-indigo-700"
             >
               Sign up free
             </Link>
@@ -43,7 +43,7 @@ export function LoginPage() {
           <Alert variant="error">
             {loginMutation.error instanceof Error
               ? loginMutation.error.message
-              : 'Sign in did not finish. Check your details and try again.'}
+              : 'Something went wrong. Please try again.'}
           </Alert>
         )}
 
@@ -67,7 +67,7 @@ export function LoginPage() {
             <div className="flex justify-end">
               <Link
                 to={ROUTES.FORGOT_PASSWORD}
-                className="text-xs font-semibold text-[#2b6d91] hover:text-[#12355b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91]"
+                className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
               >
                 Forgot password?
               </Link>
@@ -79,7 +79,7 @@ export function LoginPage() {
           </Button>
         </form>
 
-        <p className="rounded-xl bg-slate-50 px-3 py-2 text-center text-xs text-slate-500 ring-1 ring-slate-200/70">
+        <p className="rounded-lg bg-slate-50 px-3 py-2 text-center text-xs text-slate-400">
           Demo: <span className="font-mono">demo@fincompass.app</span> /{' '}
           <span className="font-mono">Password1</span>
         </p>

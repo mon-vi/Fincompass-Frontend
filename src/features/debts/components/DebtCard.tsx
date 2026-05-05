@@ -61,7 +61,7 @@ export function DebtCard({ debt }: DebtCardProps) {
         )}
         <Link
           to={`${ROUTES.DEBTS}/${debt.id}/edit`}
-          className="inline-flex min-h-9 items-center justify-center rounded-xl px-3 text-xs font-bold text-[#2b6d91] hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] sm:ml-auto"
+          className="inline-flex min-h-9 items-center justify-center rounded-xl px-3 text-xs font-bold text-[#2b6d91] hover:bg-slate-50 sm:ml-auto"
         >
           Edit
         </Link>

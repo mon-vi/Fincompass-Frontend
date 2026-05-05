@@ -10,7 +10,7 @@ export function Card({ padded = true, className, children, ...props }: CardProps
     <div
       className={cn(
         'rounded-2xl border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-900/[0.04] backdrop-blur',
-        padded && 'p-5 sm:p-6',
+        padded && 'p-6',
         className,
       )}
       {...props}
@@ -22,7 +22,7 @@ export function Card({ padded = true, className, children, ...props }: CardProps
 
 export function CardHeader({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn('mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4', className)} {...props}>
+    <div className={cn('mb-5 flex items-start justify-between gap-4', className)} {...props}>
       {children}
     </div>
   );

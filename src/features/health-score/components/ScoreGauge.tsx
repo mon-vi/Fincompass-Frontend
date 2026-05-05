@@ -11,7 +11,7 @@ const gradeColors: Record<HealthGrade, string> = {
   A: 'text-emerald-600',
   B: 'text-teal-600',
   C: 'text-amber-500',
-  D: 'text-amber-700',
+  D: 'text-orange-500',
   F: 'text-red-600',
 };
 
@@ -19,7 +19,7 @@ const gradeRingColors: Record<HealthGrade, string> = {
   A: 'stroke-emerald-500',
   B: 'stroke-teal-500',
   C: 'stroke-amber-400',
-  D: 'stroke-amber-600',
+  D: 'stroke-orange-500',
   F: 'stroke-red-500',
 };
 

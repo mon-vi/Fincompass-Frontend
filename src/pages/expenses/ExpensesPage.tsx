@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { EmptyState } from '@/components/ui/EmptyState';
 import { Skeleton } from '@/components/ui/Loader';
 import { useExpenses, useCreateExpense, useUpdateExpense } from '@/features/expenses/hooks';
 import { ExpenseRow, ExpenseForm } from '@/features/expenses/components';
@@ -44,15 +42,13 @@ export function ExpensesPage() {
     return (
       <div className="space-y-6">
         <SectionHeader title="Expenses" />
-        <Alert variant="error" title="Expenses did not load">
-          {(error as Error)?.message ?? 'We could not load your spending yet. Check your connection and try again.'}
-        </Alert>
+        <Alert variant="error">{(error as Error)?.message ?? 'Failed to load expenses'}</Alert>
       </div>
     );
   }
 
   return (
-      <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-8">
       <SectionHeader
         title="Expenses"
         subtitle="Track spending without turning every receipt into homework."
@@ -62,32 +58,31 @@ export function ExpensesPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#2b6d91]">Total this month</p>
-          <p className="mt-1 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{formatCurrency(totalSpent)}</p>
+          <p className="mt-1 text-4xl font-black tracking-tight text-slate-950">{formatCurrency(totalSpent)}</p>
           <p className="mt-1 text-sm text-slate-500">Manual, OCR, and email-imported spending show up together.</p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">
           {canUseOcr ? (
             <Link
               to={ROUTES.OCR_UPLOAD}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#2b6d91]/30 bg-[#2b6d91]/10 px-4 py-2 text-sm font-bold text-[#12355b] hover:bg-[#2b6d91]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#2b6d91]/30 bg-[#2b6d91]/10 px-4 py-2 text-sm font-bold text-[#12355b] hover:bg-[#2b6d91]/15"
             >
               Import via OCR
             </Link>
           ) : (
             <Link
               to={ROUTES.BILLING}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b6d91] focus-visible:ring-offset-2"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100"
             >
               OCR requires Navigator+
             </Link>
           )}
-          <Button
-            type="button"
-            variant="accent"
+          <button
             onClick={() => { setShowAdd(true); setEditing(null); }}
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#d97735] px-4 py-2 text-sm font-bold text-white shadow-sm shadow-orange-900/10 hover:bg-[#bf6428]"
           >
             Add expense
-          </Button>
+          </button>
         </div>
         </div>
       </div>
@@ -139,11 +134,16 @@ export function ExpensesPage() {
             ))}
           </div>
         ) : (
-          <EmptyState
-            title="No expenses yet"
-            description="Add one manually or import a receipt when you are ready. Your spending picture will build from here."
-            action={<Button type="button" variant="accent" onClick={() => setShowAdd(true)}>Add your first expense</Button>}
-          />
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-12 text-center">
+            <p className="text-sm font-semibold text-slate-700">No expenses yet.</p>
+            <p className="mt-1 text-sm text-slate-500">Add one manually or import a receipt when you are ready.</p>
+            <button
+              onClick={() => setShowAdd(true)}
+              className="mt-4 inline-flex min-h-10 items-center justify-center rounded-xl bg-white px-4 text-sm font-bold text-[#2b6d91] ring-1 ring-slate-200 hover:bg-slate-50"
+            >
+              Add your first expense
+            </button>
+          </div>
         )}
       </Card>
     </div>

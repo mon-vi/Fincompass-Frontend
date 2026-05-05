@@ -32,7 +32,7 @@ export function OcrUploadPage() {
         subtitle="Upload a statement, receipt, or invoice. FinCompass will extract the details, then you stay in control before anything is imported."
       />
 
-      <Card className="p-4 sm:p-7">
+      <Card className="p-5 sm:p-7">
         <UploadDropzone
           onFile={(file) => {
             setValidationError(null);
@@ -63,19 +63,19 @@ export function OcrUploadPage() {
         )}
 
         {session?.status === 'failed' && (
-          <Alert variant="error" className="mt-4" title="Document could not be read">
-            {session.errorMessage ?? 'Try a clearer file, a supported format, or upload a different document.'}
+          <Alert variant="error" className="mt-4">
+            {session.errorMessage ?? 'OCR processing failed. Please try a different file or check the format.'}
           </Alert>
         )}
 
         {validationError && (
-          <Alert variant="error" className="mt-4" title="Upload needs a different file">
+          <Alert variant="error" className="mt-4">
             {validationError}
           </Alert>
         )}
 
         {isError && (
-          <PremiumErrorAlert className="mt-4" message={(error as Error)?.message ?? 'The upload did not finish. Check your connection and try again.'} />
+          <PremiumErrorAlert className="mt-4" message={(error as Error)?.message ?? 'Upload failed. Please try again.'} />
         )}
       </Card>
 

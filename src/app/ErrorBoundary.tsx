@@ -44,8 +44,8 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="flex min-h-screen items-center justify-center p-6">
           <div className="w-full max-w-md space-y-4">
-            <Alert variant="error" title="We hit a temporary snag">
-              {this.state.error?.message ?? 'Your account is safe. Try again to continue.'}
+            <Alert variant="error" title="Something went wrong">
+              {this.state.error?.message ?? 'An unexpected error occurred.'}
             </Alert>
             <Button variant="secondary" onClick={this.handleReset} fullWidth>
               Try again
