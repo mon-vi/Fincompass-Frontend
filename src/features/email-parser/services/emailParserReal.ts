@@ -33,7 +33,8 @@ function mapEvent(event: LaravelEmailParserEvent): EmailParserEvent {
 export const emailParserReal: EmailParserApiAdapter = {
   async getForwardingAddress(): Promise<EmailParserForwardingAddress | null> {
     try {
-      const res = await get<LaravelResource<{ address: string } | null> | { address: string }>(apiPath(API.EMAIL_PARSER.FORWARDING_ADDRESS));
+      const res = await get<LaravelResource<{ address: string } | null> | { address: string } | null>(apiPath(API.EMAIL_PARSER.FORWARDING_ADDRESS));
+      if (!res) return null;
       return 'data' in res ? res.data : res;
     } catch (err) {
       handleApiError(err);

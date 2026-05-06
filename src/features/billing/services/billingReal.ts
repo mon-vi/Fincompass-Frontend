@@ -27,8 +27,10 @@ function mapSubscription(subscription: LaravelBillingSubscription): BillingSubsc
 export const billingReal: BillingApiAdapter = {
   async getSubscription(): Promise<BillingSubscription | null> {
     try {
-      const res = await get<LaravelResource<LaravelBillingSubscription | null>>(apiPath(API.BILLING.SUBSCRIPTION));
-      return res.data ? mapSubscription(res.data) : null;
+      const res = await get<LaravelResource<LaravelBillingSubscription | null> | LaravelBillingSubscription | null>(apiPath(API.BILLING.SUBSCRIPTION));
+      if (!res) return null;
+      const subscription = 'data' in res ? res.data : res;
+      return subscription ? mapSubscription(subscription) : null;
     } catch (err) {
       handleApiError(err);
     }
