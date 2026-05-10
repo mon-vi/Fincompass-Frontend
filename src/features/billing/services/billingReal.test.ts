@@ -19,6 +19,15 @@ describe('billingReal', () => {
     expect(api.post).toHaveBeenCalledWith('/api/v1/billing/checkout', { tier: 'cfo', billing_cycle: 'monthly' });
   });
 
+  it('uses annual billing cycle when provided', async () => {
+    api.post.mockResolvedValue({ data: { checkout_url: 'https://checkout.stripe.test' } });
+
+    const result = await billingReal.createCheckout({ plan: 'navigator', billingCycle: 'annual' });
+
+    expect(api.post).toHaveBeenCalledWith('/api/v1/billing/checkout', { tier: 'navigator', billing_cycle: 'annual' });
+    expect(result.url).toBe('https://checkout.stripe.test');
+  });
+
   it('handles null subscription safely', async () => {
     api.get.mockResolvedValue({ data: null });
 

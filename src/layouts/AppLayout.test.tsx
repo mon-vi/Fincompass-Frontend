@@ -67,7 +67,7 @@ describe('AppLayout – mobile vs desktop structure', () => {
   it('bottom nav contains the 5 primary tab labels', () => {
     renderLayout();
     const nav = screen.getByTestId('mobile-bottom-nav');
-    ['Dashboard', 'Debts', 'Budget', 'Plan', 'Profile'].forEach((label) => {
+    ['Dashboard', 'Income', 'Debts', 'Budget', 'Profile'].forEach((label) => {
       expect(nav).toHaveTextContent(label);
     });
   });

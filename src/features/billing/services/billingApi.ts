@@ -2,7 +2,7 @@ import type { UserTier } from '@/types/auth';
 
 export interface BillingSubscription {
   plan: UserTier;
-  status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'none';
+  status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'cancelled' | 'unpaid' | 'incomplete' | 'expired' | 'none';
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
 }

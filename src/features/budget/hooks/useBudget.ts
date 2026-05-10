@@ -13,6 +13,17 @@ export function useBudget() {
   });
 }
 
+export function useCalculateBudget() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => budgetAdapter.calculate(),
+    onSuccess: (calculated) => {
+      qc.setQueryData(budgetKeys.all, calculated);
+      void qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+}
+
 export function useUpdateBudget() {
   const qc = useQueryClient();
   return useMutation({

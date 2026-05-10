@@ -22,9 +22,39 @@ export interface CreateIncomePayload {
   notes?: string;
 }
 
-export interface IncomeApiAdapter {
-  create(payload: CreateIncomePayload): Promise<IncomeRecord>;
+export interface UpdateIncomePayload {
+  sourceName?: string;
+  type?: BackendIncomeType;
+  amount?: number;
+  frequency?: IncomeFrequency;
+  isActive?: boolean;
+  notes?: string;
 }
+
+export interface IncomeApiAdapter {
+  list(): Promise<IncomeRecord[]>;
+  create(payload: CreateIncomePayload): Promise<IncomeRecord>;
+  update(id: string, payload: UpdateIncomePayload): Promise<IncomeRecord>;
+  remove(id: string): Promise<void>;
+}
+
+export const INCOME_TYPE_LABELS: Record<BackendIncomeType, string> = {
+  salary: 'Salary',
+  freelance: 'Freelance / Self-employed',
+  rental: 'Rental income',
+  investment: 'Investment returns',
+  pension: 'Pension',
+  other: 'Other',
+};
+
+export const INCOME_FREQUENCY_LABELS: Record<IncomeFrequency, string> = {
+  weekly: 'Weekly',
+  biweekly: 'Bi-weekly',
+  monthly: 'Monthly',
+  quarterly: 'Quarterly',
+  annually: 'Annually',
+  one_time: 'One-time',
+};
 
 export function mapOnboardingIncomeType(type: IncomeType): BackendIncomeType {
   if (type === 'salary') return 'salary';

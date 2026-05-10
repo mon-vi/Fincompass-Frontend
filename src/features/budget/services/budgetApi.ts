@@ -19,8 +19,10 @@ export interface UpdateBudgetPayload {
 }
 
 export interface BudgetApiAdapter {
-  /** GET /api/v1/budget */
-  get(): Promise<Budget>;
+  /** GET /api/v1/budget — returns null when no budget has been calculated yet */
+  get(): Promise<Budget | null>;
+  /** POST /api/v1/budget/calculate — triggers budget calculation */
+  calculate(): Promise<Budget>;
   /** POST /api/v1/budget */
   update(payload: UpdateBudgetPayload): Promise<Budget>;
 }

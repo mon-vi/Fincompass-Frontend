@@ -1,5 +1,5 @@
 import { get, post } from '@/services/apiClient';
-import { handleApiError } from '@/services/apiError';
+import { handleApiError, ApiError } from '@/services/apiError';
 import { apiPath, API } from '@/config/endpoints';
 import type { LaravelResource } from '@/services/apiError';
 import type { Budget, UpdateBudgetPayload, BudgetApiAdapter } from './budgetApi';
@@ -25,14 +25,21 @@ function mapBudget(snapshot: LaravelBudgetSnapshot): Budget {
   };
 }
 
-/**
- * Assumption: GET /api/v1/budget returns current month by default.
- * Pass ?month=YYYY-MM as a query param when fetching specific months.
- */
 export const budgetReal: BudgetApiAdapter = {
-  async get(): Promise<Budget> {
+  async get(): Promise<Budget | null> {
     try {
-      const res = await get<LaravelResource<LaravelBudgetSnapshot>>(apiPath(API.BUDGET));
+      const res = await get<LaravelResource<LaravelBudgetSnapshot | null>>(apiPath(API.BUDGET));
+      if (!res.data) return null;
+      return mapBudget(res.data);
+    } catch (err) {
+      if (err instanceof ApiError && err.isNotFound) return null;
+      handleApiError(err);
+    }
+  },
+
+  async calculate(): Promise<Budget> {
+    try {
+      const res = await post<LaravelResource<LaravelBudgetSnapshot>>(apiPath(API.BUDGET_CALCULATE));
       return mapBudget(res.data);
     } catch (err) {
       handleApiError(err);

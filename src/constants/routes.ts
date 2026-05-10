@@ -15,6 +15,7 @@ export const ROUTES = {
 
   // Protected — main app
   DASHBOARD: '/dashboard',
+  INCOME: '/income',
   BUDGET: '/budget',
   DEBTS: '/debts',
   EXPENSES: '/expenses',

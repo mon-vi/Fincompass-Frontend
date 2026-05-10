@@ -3,5 +3,12 @@ import type { IncomeApiAdapter } from './incomeApi';
 
 export const incomeAdapter: IncomeApiAdapter = incomeReal;
 
-export { buildOnboardingIncomePayload, mapOnboardingIncomeType } from './incomeApi';
-export type { BackendIncomeType, CreateIncomePayload, IncomeApiAdapter, IncomeFrequency, IncomeRecord } from './incomeApi';
+export { buildOnboardingIncomePayload, mapOnboardingIncomeType, INCOME_TYPE_LABELS, INCOME_FREQUENCY_LABELS } from './incomeApi';
+export type {
+  BackendIncomeType,
+  CreateIncomePayload,
+  UpdateIncomePayload,
+  IncomeApiAdapter,
+  IncomeFrequency,
+  IncomeRecord,
+} from './incomeApi';

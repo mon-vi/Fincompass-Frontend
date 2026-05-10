@@ -111,8 +111,42 @@ export function DashboardPage() {
       </div>
 
       {hasNoFinancialData && (
-        <Alert variant="info" title="Your dashboard is ready for numbers">
-          Add income, expenses, or debts to turn this into a personalized command center.
+        <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-900/[0.03] sm:rounded-[2rem] sm:p-6">
+          <p className="text-sm font-bold text-slate-700">Your dashboard is ready for numbers</p>
+          <p className="mt-1 text-sm text-slate-500">Add your financial data to get a personalized view of your money.</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              to={ROUTES.INCOME}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700"
+            >
+              Add income
+            </Link>
+            <Link
+              to={ROUTES.DEBTS}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+            >
+              Add debt
+            </Link>
+            <Link
+              to={ROUTES.EXPENSES}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+            >
+              Add expense
+            </Link>
+            <Link
+              to={ROUTES.BUDGET}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+            >
+              Calculate budget
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {!hasNoFinancialData && !isLoading && dashboard.financialSummary.monthlyIncome === 0 && (
+        <Alert variant="info" title="No income recorded">
+          Add your income sources so your budget and cash flow calculations stay accurate.{' '}
+          <Link to={ROUTES.INCOME} className="font-bold underline">Add income</Link>
         </Alert>
       )}
 

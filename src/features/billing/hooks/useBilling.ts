@@ -6,10 +6,11 @@ export const billingKeys = {
   subscription: ['billing', 'subscription'] as const,
 };
 
-export function useBillingSubscription() {
+export function useBillingSubscription(options?: { refetchInterval?: number | false }) {
   return useQuery({
     queryKey: billingKeys.subscription,
     queryFn: () => billingAdapter.getSubscription(),
+    refetchInterval: options?.refetchInterval,
   });
 }
 

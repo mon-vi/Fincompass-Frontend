@@ -38,11 +38,11 @@ export const billingReal: BillingApiAdapter = {
 
   async createCheckout(payload: CheckoutPayload): Promise<BillingRedirect> {
     try {
-      const res = await post<LaravelResource<{ url: string }>>(apiPath(API.BILLING.CHECKOUT), {
+      const res = await post<LaravelResource<{ checkout_url?: string; url: string }>>(apiPath(API.BILLING.CHECKOUT), {
         tier: payload.plan,
         billing_cycle: payload.billingCycle ?? 'monthly',
       });
-      return { url: res.data.url };
+      return { url: res.data.checkout_url ?? res.data.url };
     } catch (err) {
       handleApiError(err);
     }
@@ -50,8 +50,8 @@ export const billingReal: BillingApiAdapter = {
 
   async createPortal(): Promise<BillingRedirect> {
     try {
-      const res = await post<LaravelResource<{ url: string }>>(apiPath(API.BILLING.PORTAL));
-      return { url: res.data.url };
+      const res = await post<LaravelResource<{ portal_url?: string; url: string }>>(apiPath(API.BILLING.PORTAL));
+      return { url: res.data.portal_url ?? res.data.url };
     } catch (err) {
       handleApiError(err);
     }

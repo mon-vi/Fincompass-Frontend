@@ -24,6 +24,7 @@ import { NotificationsPage } from '@/pages/notifications/NotificationsPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { BillingPage } from '@/pages/billing/BillingPage';
 import { ExpensesPage } from '@/pages/expenses/ExpensesPage';
+import { IncomePage } from '@/pages/income/IncomePage';
 import { OcrUploadPage } from '@/pages/ocr/OcrUploadPage';
 import { OcrReviewPage } from '@/pages/ocr/OcrReviewPage';
 import { EmailParserPage } from '@/pages/email-parser/EmailParserPage';
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
             element: <AppLayout />,
             children: [
               { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
+              { path: ROUTES.INCOME, element: <IncomePage /> },
               { path: ROUTES.DEBTS, element: <DebtsPage /> },
               { path: `${ROUTES.DEBTS}/add`, element: <AddDebtPage /> },
               { path: `${ROUTES.DEBTS}/:id/edit`, element: <EditDebtPage /> },
