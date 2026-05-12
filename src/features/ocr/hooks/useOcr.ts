@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ocrAdapter } from '../services';
-import { expenseKeys } from '@/features/expenses/hooks';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { ConfirmOcrPayload } from '../services';
 
 export const ocrKeys = {
@@ -43,11 +43,10 @@ export function useOcrConfirm(sessionId: string | null) {
   return useMutation({
     mutationFn: (payload: ConfirmOcrPayload) => ocrAdapter.confirmSession(sessionId!, payload),
     onSuccess: () => {
-      // Invalidate expenses so the imported items appear
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
       if (sessionId) {
         void qc.invalidateQueries({ queryKey: ocrKeys.session(sessionId) });
       }
+      invalidateFinancialQueries(qc);
     },
   });
 }

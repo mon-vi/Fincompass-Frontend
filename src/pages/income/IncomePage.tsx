@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/Loader';
 import { useIncome, useCreateIncome, useUpdateIncome } from '@/features/income/hooks';
 import { IncomeForm, IncomeRow } from '@/features/income/components';
 import { formatCurrency } from '@/utils/formatters';
+import { useSuccessMessage } from '@/hooks';
 import type { IncomeRecord } from '@/features/income/services';
 import type { IncomeFormData } from '@/features/income/validation';
 
@@ -16,11 +17,12 @@ export function IncomePage() {
 
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<IncomeRecord | null>(null);
+  const { message: successMessage, show: showSuccess } = useSuccessMessage();
 
   const handleCreate = (data: IncomeFormData) => {
     createIncome.mutate(
       { ...data, amount: Number(data.amount) },
-      { onSuccess: () => setShowAdd(false) },
+      { onSuccess: () => { setShowAdd(false); showSuccess('Saved. Recalculating your plan…'); } },
     );
   };
 
@@ -28,7 +30,7 @@ export function IncomePage() {
     if (!editing) return;
     updateIncome.mutate(
       { id: editing.id, payload: { ...data, amount: Number(data.amount) } },
-      { onSuccess: () => setEditing(null) },
+      { onSuccess: () => { setEditing(null); showSuccess('Saved. Recalculating your plan…'); } },
     );
   };
 
@@ -49,6 +51,10 @@ export function IncomePage() {
         title="Income"
         subtitle="Track all income sources so your budget and cash flow stay accurate."
       />
+
+      {successMessage && (
+        <Alert variant="success">{successMessage}</Alert>
+      )}
 
       {/* Monthly total hero */}
       <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-sm shadow-slate-900/[0.04] sm:p-6">

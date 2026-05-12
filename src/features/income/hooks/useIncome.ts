@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { incomeAdapter } from '../services';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { CreateIncomePayload, UpdateIncomePayload } from '../services';
 
 export const incomeKeys = {
@@ -17,10 +18,7 @@ export function useCreateIncome() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateIncomePayload) => incomeAdapter.create(payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: incomeKeys.all });
-      void qc.invalidateQueries({ queryKey: ['dashboard'] });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -29,10 +27,7 @@ export function useUpdateIncome() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateIncomePayload }) =>
       incomeAdapter.update(id, payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: incomeKeys.all });
-      void qc.invalidateQueries({ queryKey: ['dashboard'] });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -40,9 +35,6 @@ export function useDeleteIncome() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => incomeAdapter.remove(id),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: incomeKeys.all });
-      void qc.invalidateQueries({ queryKey: ['dashboard'] });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }

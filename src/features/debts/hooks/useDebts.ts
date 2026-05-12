@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { debtsAdapter } from '../services';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { CreateDebtPayload, UpdateDebtPayload } from '../services';
 
 export const debtKeys = {
@@ -26,9 +27,7 @@ export function useCreateDebt() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateDebtPayload) => debtsAdapter.create(payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: debtKeys.all });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -39,7 +38,7 @@ export function useUpdateDebt() {
       debtsAdapter.update(id, payload),
     onSuccess: (updated) => {
       qc.setQueryData(debtKeys.detail(updated.id), updated);
-      void qc.invalidateQueries({ queryKey: debtKeys.all });
+      invalidateFinancialQueries(qc);
     },
   });
 }
@@ -50,7 +49,7 @@ export function useDeleteDebt() {
     mutationFn: (id: string) => debtsAdapter.remove(id),
     onSuccess: (_data, id) => {
       qc.removeQueries({ queryKey: debtKeys.detail(id) });
-      void qc.invalidateQueries({ queryKey: debtKeys.all });
+      invalidateFinancialQueries(qc);
     },
   });
 }
@@ -61,7 +60,7 @@ export function useMarkDebtPaid() {
     mutationFn: (id: string) => debtsAdapter.markPaid(id),
     onSuccess: (updated) => {
       qc.setQueryData(debtKeys.detail(updated.id), updated);
-      void qc.invalidateQueries({ queryKey: debtKeys.all });
+      invalidateFinancialQueries(qc);
     },
   });
 }

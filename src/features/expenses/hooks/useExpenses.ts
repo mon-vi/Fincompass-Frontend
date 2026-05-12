@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { expensesAdapter } from '../services';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { CreateExpensePayload, UpdateExpensePayload, BulkCreateExpensePayload } from '../services';
 
 export const expenseKeys = {
@@ -18,9 +19,7 @@ export function useCreateExpense() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateExpensePayload) => expensesAdapter.create(payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -29,9 +28,7 @@ export function useUpdateExpense() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateExpensePayload }) =>
       expensesAdapter.update(id, payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -39,9 +36,7 @@ export function useDeleteExpense() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => expensesAdapter.remove(id),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }
 
@@ -49,8 +44,6 @@ export function useBulkCreateExpenses() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: BulkCreateExpensePayload) => expensesAdapter.bulkCreate(payload),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
-    },
+    onSuccess: () => { invalidateFinancialQueries(qc); },
   });
 }

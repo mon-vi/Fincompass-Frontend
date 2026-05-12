@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { emailParserAdapter } from '../services';
-import { expenseKeys } from '@/features/expenses/hooks';
-import { debtKeys } from '@/features/debts/hooks';
-import { dashboardKeys } from '@/features/dashboard/hooks';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { ApplyEmailParserEventPayload } from '../services';
 
 export const emailParserKeys = {
@@ -39,9 +37,7 @@ export function useApplyEmailParserEvent() {
     mutationFn: ({ id, payload }: { id: string; payload?: ApplyEmailParserEventPayload }) => emailParserAdapter.applyEvent(id, payload),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: emailParserKeys.events });
-      void qc.invalidateQueries({ queryKey: expenseKeys.all });
-      void qc.invalidateQueries({ queryKey: debtKeys.all });
-      void qc.invalidateQueries({ queryKey: dashboardKeys.all });
+      invalidateFinancialQueries(qc);
     },
   });
 }

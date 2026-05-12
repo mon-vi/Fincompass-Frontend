@@ -8,7 +8,7 @@ import { useExpenses, useCreateExpense, useUpdateExpense } from '@/features/expe
 import { ExpenseRow, ExpenseForm } from '@/features/expenses/components';
 import { formatCurrency } from '@/utils/formatters';
 import { ROUTES } from '@/constants/routes';
-import { useTierAccess } from '@/hooks';
+import { useTierAccess, useSuccessMessage } from '@/hooks';
 import type { Expense } from '@/features/expenses/services';
 import type { ExpenseFormData } from '@/features/expenses/validation';
 
@@ -20,11 +20,12 @@ export function ExpensesPage() {
 
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
+  const { message: successMessage, show: showSuccess } = useSuccessMessage();
 
   const handleCreate = (data: ExpenseFormData) => {
     createExpense.mutate(
       { ...data, amount: Number(data.amount) },
-      { onSuccess: () => setShowAdd(false) },
+      { onSuccess: () => { setShowAdd(false); showSuccess('Saved. Recalculating your plan…'); } },
     );
   };
 
@@ -32,7 +33,7 @@ export function ExpensesPage() {
     if (!editing) return;
     updateExpense.mutate(
       { id: editing.id, payload: { ...data, amount: Number(data.amount) } },
-      { onSuccess: () => setEditing(null) },
+      { onSuccess: () => { setEditing(null); showSuccess('Saved. Recalculating your plan…'); } },
     );
   };
 
@@ -53,6 +54,10 @@ export function ExpensesPage() {
         title="Expenses"
         subtitle="Track spending without turning every receipt into homework."
       />
+
+      {successMessage && (
+        <Alert variant="success">{successMessage}</Alert>
+      )}
 
       <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-sm shadow-slate-900/[0.04] sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

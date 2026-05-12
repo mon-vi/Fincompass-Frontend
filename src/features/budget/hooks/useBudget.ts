@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { budgetAdapter } from '../services';
+import { invalidateFinancialQueries } from '@/features/finance/invalidateFinancialQueries';
 import type { UpdateBudgetPayload } from '../services';
 
 export const budgetKeys = {
@@ -19,7 +20,7 @@ export function useCalculateBudget() {
     mutationFn: () => budgetAdapter.calculate(),
     onSuccess: (calculated) => {
       qc.setQueryData(budgetKeys.all, calculated);
-      void qc.invalidateQueries({ queryKey: ['dashboard'] });
+      invalidateFinancialQueries(qc);
     },
   });
 }
